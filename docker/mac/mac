@@ -129,8 +129,6 @@ case "$1" in
   ${RUN_APP} composer dump-autoload
 
   ${RUN_APP} ./artisan migrate:refresh --seed
-  ${RUN_APP} ./artisan db:seed --class=SampleIkunuker
-  ${RUN_APP} ./artisan db:seed --class=SampleCreator
 
   ${RUN_APP} ./artisan ide-helper:generate
   ${RUN_APP} ./artisan ide-helper:models --nowrite
@@ -209,8 +207,7 @@ case "$1" in
   ${RUN_APP} ./artisan db:wipe
   ${RUN_APP} ./artisan migrate
   ${RUN_APP} ./artisan migrate:refresh
-  ${RUN_APP} ./artisan db:seed --class=SampleIkunuker
-  ${RUN_APP} ./artisan db:seed --class=SampleCreator
+  ${RUN_APP} ./artisan db:seed
   ;;
 
 "composer")
