@@ -1,0 +1,153 @@
+version: '3.8'
+
+services:
+  web:
+    ports:
+      - "${LOCAL_IP}:443:443"
+      - "${LOCAL_IP}:80:80"
+    image: nginx:1.17.9-alpine
+    container_name: ${COMPOSE_PROJECT_NAME}-${WEB_SUFFIX}
+    working_dir: /opt/${PROJECT_DOMAIN}
+    env_file:
+      - .env
+    command: >
+      /bin/sh -c
+      "envsubst '
+      $$PROJECT_DOMAIN
+      '< /etc/nginx/conf.d/default.conf.template
+      > /etc/nginx/conf.d/default.conf
+      && nginx -g 'daemon off;'"
+    volumes:
+      # file
+      - ./nginx/default.conf.template:/etc/nginx/conf.d/default.conf.template
+      - ./nginx/ssl/cert.pem:/etc/ssl/certs/cert.pem
+      - ./nginx/ssl/key.pem:/etc/ssl/certs/key.pem
+      # volume
+      - socket-volume:/var/run/php-fpm
+      - schemaspy-volume:/opt/schema
+      - public-volume:/opt/${PROJECT_DOMAIN}/public
+    depends_on:
+      - app
+    networks:
+      default:
+        aliases:
+          - ${PROJECT_DOMAIN}
+
+  app:
+    build:
+      context: ../../src
+      dockerfile: ../docker/mac/php/Dockerfile
+      args:
+        - PROJECT_DOMAIN=${PROJECT_DOMAIN}
+    container_name: ${COMPOSE_PROJECT_NAME}-${APP_SUFFIX}
+    volumes:
+      # directories
+      - ../../src/app:/opt/${PROJECT_DOMAIN}/app
+      - ../../src/bootstrap:/opt/${PROJECT_DOMAIN}/bootstrap
+      - ../../src/config:/opt/${PROJECT_DOMAIN}/config
+      - ../../src/database:/opt/${PROJECT_DOMAIN}/database
+      - ../../src/resources:/opt/${PROJECT_DOMAIN}/resources
+      - ../../src/routes:/opt/${PROJECT_DOMAIN}/routes
+      - ../../src/tests:/opt/${PROJECT_DOMAIN}/tests
+      # files
+      - ../../src/.styleci.yml:/opt/${PROJECT_DOMAIN}/.styleci.yml
+      - ../../src/artisan:/opt/${PROJECT_DOMAIN}/artisan
+      - ../../src/composer.json:/opt/${PROJECT_DOMAIN}/composer.json
+      - ../../src/composer.lock:/opt/${PROJECT_DOMAIN}/composer.lock
+      - ../../src/phpunit.xml:/opt/${PROJECT_DOMAIN}/phpunit.xml
+      - ../../src/server.php:/opt/${PROJECT_DOMAIN}/server.php
+      # php.ini
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+      # php.conf
+      - ./php/zzz-www.conf:/usr/local/etc/php-fpm.d/zzz-www.conf
+      # volumes
+      - vendor-volume:/opt/${PROJECT_DOMAIN}/vendor
+      - storage-volume:/opt/${PROJECT_DOMAIN}/storage
+      - socket-volume:/var/run/php-fpm
+      - node-volume:/opt/${PROJECT_DOMAIN}/node_modules
+      - public-volume:/opt/${PROJECT_DOMAIN}/public
+    working_dir: /opt/${PROJECT_DOMAIN}
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - mail
+      - s3
+
+  schemaspy:
+    container_name: ${COMPOSE_PROJECT_NAME}-${SCHEMA_SUFFIX}
+    build: postgre/schemaspy
+    working_dir: /app
+    volumes:
+      - schemaspy-volume:/output
+    env_file:
+      - .env
+    depends_on:
+      - db
+    tty: true
+
+  db:
+    image: postgres:13.4-alpine
+    container_name: ${COMPOSE_PROJECT_NAME}-${DB_SUFFIX}
+    volumes:
+      # file
+      - ./postgre/sql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      # volumes
+      - db-volume:/var/lib/postgresql/data
+    ports:
+      - "${LOCAL_IP}:5432:5432"
+    env_file:
+      - .env
+
+  redis:
+    image: redis:6.0-alpine
+    container_name: ${COMPOSE_PROJECT_NAME}-${REDIS_SUFFIX}
+    volumes:
+      - redis-volume:/data
+    command: redis-server --appendonly yes
+    env_file:
+      - .env
+    ports:
+      - "${LOCAL_IP}:6379:6379"
+
+  mail:
+    image: mailhog/mailhog
+    container_name: ${COMPOSE_PROJECT_NAME}-${MAIL_SUFFIX}
+
+  bucket:
+    image: minio/mc
+    container_name: ${COMPOSE_PROJECT_NAME}-${BUCKET_SUFFIX}
+    depends_on:
+      - s3
+    env_file:
+      - .env
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc config host add myminio http://${COMPOSE_PROJECT_NAME}-${S3_SUFFIX}:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc mb myminio/${AWS_BUCKET};
+      /usr/bin/mc policy set public myminio/${AWS_BUCKET};
+      exit 0;
+      "
+
+  s3:
+    image: minio/minio:latest
+    container_name: ${COMPOSE_PROJECT_NAME}-${S3_SUFFIX}
+    env_file:
+      - .env
+    command: server /export --console-address ":9001"
+    volumes:
+      - s3-vlomue:/export
+      - s3-config-vlomue:/root/.minio
+
+volumes:
+  vendor-volume: { }
+  storage-volume: { }
+  redis-volume: { }
+  db-volume: { }
+  socket-volume: { }
+  schemaspy-volume: { }
+  node-volume: { }
+  public-volume: { }
+  s3-vlomue: { }
+  s3-config-vlomue: { }

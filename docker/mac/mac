@@ -1,0 +1,243 @@
+#!/bin/bash
+
+# .env ファイルを .env.localからコピーして生成する
+if [ ! -e '.env' ]; then
+    echo envファイルを生成します。
+    cp .env.local .env
+    echo envファイルが生成されました。
+fi
+
+# localのループバックIPを一つ設定する
+LOCAL_IP=$(grep LOCAL_IP .env | cut -d '=' -f2)
+
+# macにて必要に応じて sudo ifconfig lo0 alias を叩く
+if ifconfig | grep -i "$LOCAL_IP"  >/dev/null; then
+    echo "$LOCAL_IP" は有効です。
+else
+    echo "$LOCAL_IP" が無効なのでエイリアスを生成します。パスワードを入力してください。
+    sudo ifconfig lo0 alias "$LOCAL_IP" up
+fi
+
+# ドメイン定義
+PROJECT_DOMAIN=$(grep PROJECT_DOMAIN .env | cut -d '=' -f2 | head -1)
+
+# プロジェクト名定義
+COMPOSE_PROJECT_NAME=$(grep COMPOSE_PROJECT_NAME .env | cut -d '=' -f2 | head -1)
+
+# コンテナ名サフィックス
+WEB_SUFFIX=$(grep WEB_SUFFIX .env | cut -d '=' -f2 | head -1)
+APP_SUFFIX=$(grep APP_SUFFIX .env | cut -d '=' -f2 | head -1)
+DB_SUFFIX=$(grep DB_SUFFIX .env | cut -d '=' -f2 | head -1)
+SCHEMA_SUFFIX=$(grep SCHEMA_SUFFIX .env | cut -d '=' -f2 | head -1)
+
+
+# コンテナ名定義
+WEB="${COMPOSE_PROJECT_NAME}-${WEB_SUFFIX}"
+APP="${COMPOSE_PROJECT_NAME}-${APP_SUFFIX}"
+DB="${COMPOSE_PROJECT_NAME}-${DB_SUFFIX}"
+SCHEMA="${COMPOSE_PROJECT_NAME}-${SCHEMA_SUFFIX}"
+
+# コマンド定義
+RUN_APP="docker exec -it ${APP}"
+RUN_SCHEMA="docker exec -it ${SCHEMA}"
+
+# コンテナ内のパス定義
+REMOTE_APP_DIR="/opt/${PROJECT_DOMAIN}"
+REMOTE_VENDOR_DIR="${REMOTE_APP_DIR}/vendor"
+REMOTE_NODE_DIR="${REMOTE_APP_DIR}/node_modules"
+
+# ローカルのパス定義
+LOCAL_APP_DIR="../../src"
+LOCAL_VENDOR_DIR="${LOCAL_APP_DIR}/vendor"
+LOCAL_NODE_DIR="${LOCAL_APP_DIR}/node_modules"
+
+# その他値設定
+DB_USER=$(grep DB_USERNAME .env | cut -d '=' -f2 | head -1)
+DB_PORT=$(grep DB_PORT .env | cut -d '=' -f2 | head -1)
+DB_DATABASE=$(grep DB_DATABASE .env | cut -d '=' -f2 | head -1)
+DB_PASSWORD=$(grep DB_PASSWORD .env | cut -d '=' -f2 | head -1)
+DB_SCHEMA=$(grep DB_SCHEMA .env | cut -d '=' -f2 | head -1)
+
+case "$1" in
+
+"create")
+# イメージ、データボリュームの全消し。最初からやり直す場合に使用する。
+  docker-compose down --rmi all --volumes --remove-orphans
+  rm -rf ${LOCAL_VENDOR_DIR}
+  rm -rf ${LOCAL_NODE_DIR}
+
+  rm -rf ./nginx/ssl
+  mkdir -p ./nginx/ssl
+  mkcert -key-file ./nginx/ssl/key.pem -cert-file ./nginx/ssl/cert.pem "${PROJECT_DOMAIN}" "*.${PROJECT_DOMAIN}"
+  mkcert -install
+
+  docker-compose up -d --build
+
+  ${RUN_APP} dockerize -timeout 60s -wait tcp://"${DB}":5432
+
+  ${RUN_APP} chmod 777 -R storage
+  ${RUN_APP} composer install
+  ${RUN_APP} composer dump-autoload
+
+  ${RUN_APP} ./artisan migrate:refresh --seed
+  ${RUN_APP} ./artisan ide-helper:generate
+  ${RUN_APP} ./artisan ide-helper:models --nowrite
+
+  docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
+  docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
+
+  ${RUN_SCHEMA} java -jar schemaspy.jar \
+      -o /output -t pgsql \
+      -u "${DB_USER}" \
+      -dp /app \
+      -host "${DB}" \
+      -port "${DB_PORT}" \
+      -db "${DB_DATABASE}" \
+      -p "${DB_PASSWORD}" \
+      -s "${DB_SCHEMA}"
+
+  docker network prune -f
+  docker container prune -f
+  docker image prune -f
+  docker volume prune -f
+
+  docker images
+  docker ps -a
+  ;;
+
+"rebuild")
+# イメージだけリビルドする
+  docker-compose down
+  docker-compose up -d --build
+  docker container prune -f
+  docker image prune -f
+  docker images
+  docker ps -a
+  ;;
+
+"setup")
+# ボリュームを削除して再度やり直す
+  docker-compose down --volumes --remove-orphans
+
+  rm -rf ${LOCAL_VENDOR_DIR}
+  rm -rf ${LOCAL_NODE_DIR}
+
+  docker-compose up -d
+
+  ${RUN_APP} chmod 777 -R storage
+  ${RUN_APP} composer install
+  ${RUN_APP} composer dump-autoload
+
+  ${RUN_APP} ./artisan migrate:refresh --seed
+  ${RUN_APP} ./artisan db:seed --class=SampleIkunuker
+  ${RUN_APP} ./artisan db:seed --class=SampleCreator
+
+  ${RUN_APP} ./artisan ide-helper:generate
+  ${RUN_APP} ./artisan ide-helper:models --nowrite
+
+  docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
+  docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
+
+  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
+  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
+
+  ${RUN_SCHEMA} java -jar schemaspy.jar \
+    -o /output -t pgsql \
+    -u "${DB_USER}" \
+    -dp /app \
+    -host "${DB}" \
+    -port "${DB_PORT}" \
+    -db "${DB_DATABASE}" \
+    -p "${DB_PASSWORD}" \
+    -s "${DB_SCHEMA}"
+
+  docker container prune -f
+  docker image prune -f
+  docker images
+  docker ps -a
+  ;;
+
+"up")
+# docker-composeの単純な再起動
+  docker-compose down
+  docker-compose up -d
+  docker ps -a
+  ;;
+
+"down")
+# docker-compose down
+  docker-compose down
+  docker container prune -f
+  docker image prune -f
+  docker images
+  docker ps -a
+  ;;
+
+"https")
+  docker exec -it "${HTTPS}" bash
+  ;;
+
+"web")
+  docker exec -it "${WEB}" sh
+  ;;
+
+"app")
+  docker exec -it "${APP}" sh
+  ;;
+
+"schema")
+  ${RUN_SCHEMA} java -jar schemaspy.jar \
+      -o /output -t pgsql \
+      -u "${DB_USER}" \
+      -dp /app \
+      -host "${DB}" \
+      -port "${DB_PORT}" \
+      -db "${DB_DATABASE}" \
+      -p "${DB_PASSWORD}" \
+      -s "${DB_SCHEMA}"
+  ;;
+
+"ide")
+  ${RUN_APP} ./artisan ide-helper:generate
+  ${RUN_APP} ./artisan ide-helper:models --nowrite
+  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
+  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
+  ;;
+
+"db:refresh")
+  ${RUN_APP} dockerize -timeout 60s -wait tcp://"${DB}":5432
+  ${RUN_APP} ./artisan db:wipe
+  ${RUN_APP} ./artisan migrate
+  ${RUN_APP} ./artisan migrate:refresh
+  ${RUN_APP} ./artisan db:seed --class=SampleIkunuker
+  ${RUN_APP} ./artisan db:seed --class=SampleCreator
+  ;;
+
+"composer")
+  rm -rf ${LOCAL_VENDOR_DIR}
+  ${RUN_APP} composer "${@:2}"
+  docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
+  ;;
+
+"artisan")
+  ${RUN_APP} ./artisan "${@:2}"
+  ;;
+
+"yarn")
+  rm -rf ${LOCAL_NODE_DIR}
+  ${RUN_APP} yarn "${@:2}"
+  docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
+  ;;
+
+"watch")
+  ${RUN_APP} yarn watch
+  ;;
+
+"logs")
+  docker-compose logs -f
+  ;;
+
+"test")
+  docker exec -i "${APP}" ./vendor/bin/phpunit
+  ;;
+esac

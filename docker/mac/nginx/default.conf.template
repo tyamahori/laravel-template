@@ -1,0 +1,105 @@
+server {
+    listen 80;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    server_name schema.${PROJECT_DOMAIN};
+
+    listen 443 ssl http2;
+    ssl_certificate     /etc/ssl/certs/cert.pem;
+    ssl_certificate_key /etc/ssl/certs/key.pem;
+    ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+
+    root /opt/schema;
+
+    add_header X-Frame-Options "DENY";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Content-Type-Options "nosniff";
+
+    server_tokens off;
+
+    index index.html;
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.html$is_args$args;
+    }
+
+    error_page 404 = @top;
+    location @top {
+      return 301 /;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+
+server {
+    server_name minio.${PROJECT_DOMAIN};
+    listen 443 ssl http2;
+    ssl_certificate     /etc/ssl/certs/cert.pem;
+    ssl_certificate_key /etc/ssl/certs/key.pem;
+    ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+
+    location / {
+        proxy_pass http://s3:9001;
+    }
+}
+
+server {
+    server_name mail.${PROJECT_DOMAIN};
+    listen 443 ssl http2;
+    ssl_certificate     /etc/ssl/certs/cert.pem;
+    ssl_certificate_key /etc/ssl/certs/key.pem;
+    ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+
+    location / {
+        proxy_pass http://mail:8025;
+    }
+}
+
+server {
+    client_max_body_size 500M;
+    server_name ${PROJECT_DOMAIN};
+
+    listen 443 ssl http2;
+    ssl_certificate     /etc/ssl/certs/cert.pem;
+    ssl_certificate_key /etc/ssl/certs/key.pem;
+    ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+
+    root /opt/${PROJECT_DOMAIN}/public;
+
+    add_header X-Frame-Options "DENY";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Content-Type-Options "nosniff";
+
+    server_tokens off;
+
+    index index.php;
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
