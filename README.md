@@ -24,16 +24,28 @@ Made By [tyamahori](https://twitter.com/tyamahori)
 $ cd docker/mac && ./mac create
 ```
 
+# アプリケーション情報
+|  項目名  |  バージョン  |
+| ---- | ---- |
+|  PHP  |  8.0.10  |
+|  PostgreSQL  |  13.4  |
+|  Redis  |  6.0  |
+
+# 開発ツール情報
+|  項目名  |  備考  |
+| ---- | ---- |
+|  Mailhog  |  メールの確認ができます |
+|  Minio  | s3のローカルモックツールです<br> ID: `tyamahori` Pass: `tyamahori`|
+|  SchemaSpy  |  DBのあれこれを便利に確認できるツールです  |
+
 
 # DBアクセス情報
 
 ## 前提
-
-GUIツールなどでのアクセス設定で必要となります。
-
-- PostgreSQL 13.4
+- PostgreSQLを利用しています
 
 ## 接続情報
+GUIツールなどでのアクセス設定で必要となります。
 
 |  項目名  |  情報  |
 | ---- | ---- |
@@ -42,3 +54,12 @@ GUIツールなどでのアクセス設定で必要となります。
 |  USERNAME  |  tyamahori  |
 |  PASSWORD  |  tyamahori  |
 |  SCHEMA  |  tyamahori  |
+
+# 開発URL
+
+|  項目名  |  URL  |
+| ---- | ---- |
+|  Laravelアプリケーション  |  https://tyamahori.love/  |
+|  SchemaSpy  |  https://schema.tyamahori.love/  |
+|  Mailhog  |  https://mail.tyamahori.love/  |
+|  Minio  |  https://minio.tyamahori.love/  |
