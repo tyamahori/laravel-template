@@ -28,6 +28,7 @@ $ cd docker/mac && ./mac create
 |  項目名  |  バージョン  |
 | ---- | ---- |
 |  PHP  |  8.0.10  |
+|  Laravel  |  8.61.0  |
 |  PostgreSQL  |  13.4  |
 |  Redis  |  6.0  |
 
@@ -35,7 +36,7 @@ $ cd docker/mac && ./mac create
 |  項目名  |  備考  |
 | ---- | ---- |
 |  Mailhog  |  メールの確認ができます |
-|  Minio  | s3のローカルモックツールです<br> ID: `tyamahori` Pass: `tyamahori`|
+|  Minio  | s3のローカルモックツールです|
 |  SchemaSpy  |  DBのあれこれを便利に確認できるツールです  |
 
 
@@ -62,4 +63,4 @@ GUIツールなどでのアクセス設定で必要となります。
 |  Laravelアプリケーション  |  https://tyamahori.love/  |
 |  SchemaSpy  |  https://schema.tyamahori.love/  |
 |  Mailhog  |  https://mail.tyamahori.love/  |
-|  Minio  |  https://minio.tyamahori.love/  |
+|  Minio  |  https://minio.tyamahori.love/ <br> ID: `tyamahori` Pass: `tyamahori` |
