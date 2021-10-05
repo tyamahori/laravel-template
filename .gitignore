@@ -14,7 +14,7 @@ yarn-error.log
 
 ### IDE ###
 .idea
-laravel/_ide_helper*.php
+src/_ide_helper*.php
 
 ### mac ###
 .DS_Store
