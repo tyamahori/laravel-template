@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   web:
@@ -140,14 +140,29 @@ services:
       - s3-vlomue:/export
       - s3-config-vlomue:/root/.minio
 
+networks:
+  default:
+    external: true
+    name: ${NETWORK_NAME}
+
 volumes:
-  vendor-volume: { }
-  storage-volume: { }
-  redis-volume: { }
-  db-volume: { }
-  socket-volume: { }
-  schemaspy-volume: { }
-  node-volume: { }
-  public-volume: { }
-  s3-vlomue: { }
-  s3-config-vlomue: { }
+  vendor-volume:
+    name: ${COMPOSE_PROJECT_NAME}-vendor
+  storage-volume:
+    name: ${COMPOSE_PROJECT_NAME}-storage
+  redis-volume:
+    name: ${COMPOSE_PROJECT_NAME}-redis
+  db-volume:
+    name: ${COMPOSE_PROJECT_NAME}-db
+  socket-volume:
+    name: ${COMPOSE_PROJECT_NAME}-socket
+  schemaspy-volume:
+    name: ${COMPOSE_PROJECT_NAME}-schemaspy
+  node-volume:
+    name: ${COMPOSE_PROJECT_NAME}-node
+  public-volume:
+    name: ${COMPOSE_PROJECT_NAME}-public
+  s3-vlomue:
+    name: ${COMPOSE_PROJECT_NAME}-s3
+  s3-config-vlomue:
+    name: ${COMPOSE_PROJECT_NAME}-s3-config
