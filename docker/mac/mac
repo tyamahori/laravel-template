@@ -71,6 +71,10 @@ case "$1" in
   mkcert -key-file ./nginx/ssl/key.pem -cert-file ./nginx/ssl/cert.pem "${PROJECT_DOMAIN}" "*.${PROJECT_DOMAIN}"
   mkcert -install
 
+  # ネットワーク名定義
+  PROJECT_NETWORK=$(grep NETWORK_NAME .env | cut -d '=' -f2)
+  docker network ls | grep "${PROJECT_NETWORK}" >/dev/null || docker network create "${PROJECT_NETWORK}"
+
   docker-compose up -d --build
 
   ${RUN_APP} dockerize -timeout 60s -wait tcp://"${DB}":5432
@@ -203,11 +207,27 @@ case "$1" in
   ;;
 
 "db:refresh")
+  docker-compose down
+
+  docker volume rm "${COMPOSE_PROJECT_NAME}-db"
+  docker volume rm "${COMPOSE_PROJECT_NAME}-redis"
+  # docker volume rm "${COMPOSE_PROJECT_NAME}-redis" 画像登録時を想定する場合はコメントアウトする
+
+  docker-compose up -d
   ${RUN_APP} dockerize -timeout 60s -wait tcp://"${DB}":5432
-  ${RUN_APP} ./artisan db:wipe
   ${RUN_APP} ./artisan migrate
   ${RUN_APP} ./artisan migrate:refresh
   ${RUN_APP} ./artisan db:seed
+
+  ${RUN_SCHEMA} java -jar schemaspy.jar \
+      -o /output -t pgsql \
+      -u "${DB_USER}" \
+      -dp /app \
+      -host "${DB}" \
+      -port "${DB_PORT}" \
+      -db "${DB_DATABASE}" \
+      -p "${DB_PASSWORD}" \
+      -s "${DB_SCHEMA}"
   ;;
 
 "composer")
