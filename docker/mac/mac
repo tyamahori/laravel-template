@@ -18,6 +18,10 @@ else
     sudo ifconfig lo0 alias "$LOCAL_IP" up
 fi
 
+# ネットワーク名定義
+PROJECT_NETWORK=$(grep NETWORK_NAME .env | cut -d '=' -f2)
+docker network ls | grep "${PROJECT_NETWORK}" >/dev/null || docker network create "${PROJECT_NETWORK}"
+
 # ドメイン定義
 PROJECT_DOMAIN=$(grep PROJECT_DOMAIN .env | cut -d '=' -f2 | head -1)
 
@@ -70,10 +74,6 @@ case "$1" in
   mkdir -p ./nginx/ssl
   mkcert -key-file ./nginx/ssl/key.pem -cert-file ./nginx/ssl/cert.pem "${PROJECT_DOMAIN}" "*.${PROJECT_DOMAIN}"
   mkcert -install
-
-  # ネットワーク名定義
-  PROJECT_NETWORK=$(grep NETWORK_NAME .env | cut -d '=' -f2)
-  docker network ls | grep "${PROJECT_NETWORK}" >/dev/null || docker network create "${PROJECT_NETWORK}"
 
   docker-compose up -d --build
 
