@@ -4,6 +4,8 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
  && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
  && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
+FROM node:16-alpine as node
+
 FROM php:8.0.10-fpm-alpine3.14
 
 ENV COMPOSER_HOME=/root/composer \
@@ -14,9 +16,12 @@ ENV COMPOSER_HOME=/root/composer \
 COPY --from=build /usr/bin/composer /usr/bin/composer
 COPY --from=build /usr/local/bin/dockerize /usr/bin/dockerize
 
+COPY --from=node /usr/local/bin/ /usr/local/bin/
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+
 # package install and setup
 RUN set -eux \
- && apk add --update-cache --no-cache openssl git autoconf nodejs npm yarn postgresql-dev libtool make gcc g++ libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev python3 postgresql-client \
+ && apk add --update-cache --no-cache openssl git autoconf postgresql-dev libtool make gcc g++ libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev python3 postgresql-client \
  && pecl install redis \
  && docker-php-ext-configure gd --with-jpeg=/usr \
  && docker-php-ext-configure opcache --enable-opcache \
