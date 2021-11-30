@@ -6,7 +6,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 FROM node:16-alpine as node
 
-FROM php:8.0.10-fpm-alpine3.14
+FROM php:8.1-fpm-alpine3.15
 
 ENV COMPOSER_HOME=/root/composer \
     PATH=$COMPOSER_HOME/vendor/bin:$PATH \
