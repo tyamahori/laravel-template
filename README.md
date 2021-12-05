@@ -4,7 +4,7 @@ Made By [tyamahori](https://twitter.com/tyamahori)
 
 # 前提条件
 
-- Macを利用している
+- Mac(Intel/M1)を利用している
 - Docker Desktop on Mac を利用している
 - [FiloSottile/mkcert](https://github.com/FiloSottile/mkcert) をインストールしている
 
@@ -20,11 +20,13 @@ Made By [tyamahori](https://twitter.com/tyamahori)
 ```
 
 # 起動方法
+
 ```shell
 $ cd docker/mac && ./mac create
 ```
 
 # アプリケーション情報
+
 | 項目名     | バージョン |
 | ---------- | ------     |
 | PHP        | 8.1.0      |
@@ -33,19 +35,21 @@ $ cd docker/mac && ./mac create
 | Redis      | 6.0        |
 
 # 開発ツール情報
+
 | 項目名    | 備考 |
 | ----      | ---- |
 | Mailhog   | メールの確認ができます |
 | Minio     | s3のローカルモックツールです |
 | SchemaSpy | DBのあれこれを便利に確認できるツールです |
 
-
 # DBアクセス情報
 
 ## 前提
+
 - PostgreSQLを利用しています
 
 ## 接続情報
+
 GUIツールなどでのアクセス設定で必要となります。
 
 | 項目名   | 情報      |
