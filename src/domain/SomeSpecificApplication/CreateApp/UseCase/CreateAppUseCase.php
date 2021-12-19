@@ -14,7 +14,8 @@ class CreateAppUseCase
      */
     public function __construct(
         private SampleRepositoryInterface $sampleRepository
-    ) {}
+    ) {
+    }
 
     /**
      * @param CreateAppParameter $parameter
