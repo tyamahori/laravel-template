@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Domain\SomeSpecificApplication\CreateApp\Controller\CreateAppControllerInterface;
 use Domain\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;
+use Domain\SomeSpecificApplication\CreateApp\Infrastructure\Controller\CreateAppController;
 use Domain\SomeSpecificApplication\CreateApp\Infrastructure\Repository\AuthLoggerRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,6 +29,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             SampleRepositoryInterface::class,
             AuthLoggerRepository::class
+        );
+
+        $this->app->bind(
+            CreateAppControllerInterface::class,
+            CreateAppController::class
         );
     }
 }
