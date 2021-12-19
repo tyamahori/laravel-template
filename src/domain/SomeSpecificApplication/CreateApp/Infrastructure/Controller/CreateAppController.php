@@ -27,7 +27,7 @@ class CreateAppController extends Controller implements CreateAppControllerInter
      */
     public function __invoke(): JsonResponse
     {
-        $this->request->validate([
+        $this->validate($this->request, [
             'user_name' => ['required', 'string', 'max:255'],
             'user_age' => ['required', 'integer', 'min:0', 'max:40'],
         ]);
