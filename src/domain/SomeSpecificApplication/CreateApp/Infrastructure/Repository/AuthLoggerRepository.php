@@ -13,7 +13,8 @@ class AuthLoggerRepository implements SampleRepositoryInterface
      */
     public function __construct(
         private LoggerInterface $logger
-    ) {}
+    ) {
+    }
 
     /**
      * @param LoginUserAccount $loginUserAccount
