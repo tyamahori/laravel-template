@@ -1,6 +1,6 @@
 <?php
 
-use Domain\SomeSpecificApplication\CreateApp\Controller\CreateAppController;
+use Domain\SomeSpecificApplication\CreateApp\Controller\CreateAppControllerInterface;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('sample', CreateAppController::class)->name('sample');
+Route::post('sample', CreateAppControllerInterface::class)->name('sample');
