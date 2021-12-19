@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Domain\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;
+use Domain\SomeSpecificApplication\CreateApp\Infrastructure\Repository\AuthLoggerRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,9 +13,8 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        //
     }
 
     /**
@@ -21,8 +22,11 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        //
+        $this->app->bind(
+            SampleRepositoryInterface::class,
+            AuthLoggerRepository::class
+        );
     }
 }

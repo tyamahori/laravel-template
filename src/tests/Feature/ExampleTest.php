@@ -8,13 +8,23 @@ class ExampleTest extends TestCase
 {
     /**
      * A basic test example.
-     *
      * @return void
      */
-    public function test_example()
+    public function test_example(): void
     {
-        $response = $this->get('/');
+        $response = $this->postJson(route('api.sample'), [
+            'user_name' => 'test',
+            'user_age' => 16,
+        ]);
 
-        $response->assertStatus(200);
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'message' => 'Successfully created user!',
+                'userProfile' => [
+                    'name' => 'test',
+                    'age' => 16,
+                ],
+            ]);
     }
 }
