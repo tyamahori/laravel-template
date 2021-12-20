@@ -1,6 +1,6 @@
 <?php
 
-namespace Package\SomeSpecificApplication\CreateApp\Controller;
+namespace Package\SomeSpecificApplication\CreateApp\Presenter;
 
 interface CreateAppControllerInterface
 {

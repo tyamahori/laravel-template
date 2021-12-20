@@ -3,7 +3,7 @@
 namespace Package\SomeSpecificApplication\CreateApp\Infrastructure\Controller;
 
 use App\Http\Controllers\Controller;
-use Package\SomeSpecificApplication\CreateApp\Controller\CreateAppControllerInterface;
+use Package\SomeSpecificApplication\CreateApp\Presenter\CreateAppControllerInterface;
 use Package\SomeSpecificApplication\CreateApp\UseCase\CreateAppParameter;
 use Package\SomeSpecificApplication\CreateApp\UseCase\CreateAppUseCase;
 use Illuminate\Http\JsonResponse;

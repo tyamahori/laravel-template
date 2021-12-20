@@ -1,6 +1,6 @@
 <?php
 
-use Package\SomeSpecificApplication\CreateApp\Controller\CreateAppControllerInterface;
+use Package\SomeSpecificApplication\CreateApp\Presenter\CreateAppControllerInterface;
 use Illuminate\Support\Facades\Route;
 
 /*
