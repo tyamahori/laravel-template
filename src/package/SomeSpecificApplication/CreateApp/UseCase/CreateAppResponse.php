@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\SomeSpecificApplication\CreateApp\UseCase;
+namespace Package\SomeSpecificApplication\CreateApp\UseCase;
 
 use InvalidArgumentException;
 

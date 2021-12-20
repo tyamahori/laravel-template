@@ -1,9 +1,9 @@
 <?php
 
-namespace Domain\SomeSpecificApplication\CreateApp\Domain\Entity;
+namespace Package\SomeSpecificApplication\CreateApp\Domain\Entity;
 
-use Domain\SomeSpecificApplication\CreateApp\Domain\ValueObject\Age;
-use Domain\SomeSpecificApplication\CreateApp\Domain\ValueObject\Name;
+use Package\SomeSpecificApplication\CreateApp\Domain\ValueObject\Age;
+use Package\SomeSpecificApplication\CreateApp\Domain\ValueObject\Name;
 
 class LoginUserAccount
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Domain\SomeSpecificApplication\CreateApp\UseCase;
+namespace Package\SomeSpecificApplication\CreateApp\UseCase;
 
-use Domain\SomeSpecificApplication\CreateApp\Domain\Entity\LoginUserAccount;
-use Domain\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;
-use Domain\SomeSpecificApplication\CreateApp\Domain\ValueObject\Age;
-use Domain\SomeSpecificApplication\CreateApp\Domain\ValueObject\Name;
+use Package\SomeSpecificApplication\CreateApp\Domain\Entity\LoginUserAccount;
+use Package\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;
+use Package\SomeSpecificApplication\CreateApp\Domain\ValueObject\Age;
+use Package\SomeSpecificApplication\CreateApp\Domain\ValueObject\Name;
 
 class CreateAppUseCase
 {

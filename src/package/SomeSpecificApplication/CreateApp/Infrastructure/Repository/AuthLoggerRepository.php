@@ -1,9 +1,9 @@
 <?php
 
-namespace Domain\SomeSpecificApplication\CreateApp\Infrastructure\Repository;
+namespace Package\SomeSpecificApplication\CreateApp\Infrastructure\Repository;
 
-use Domain\SomeSpecificApplication\CreateApp\Domain\Entity\LoginUserAccount;
-use Domain\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;
+use Package\SomeSpecificApplication\CreateApp\Domain\Entity\LoginUserAccount;
+use Package\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;
 use Psr\Log\LoggerInterface;
 
 class AuthLoggerRepository implements SampleRepositoryInterface

@@ -1,11 +1,11 @@
 <?php
 
-namespace Domain\SomeSpecificApplication\CreateApp\Infrastructure\Controller;
+namespace Package\SomeSpecificApplication\CreateApp\Infrastructure\Controller;
 
 use App\Http\Controllers\Controller;
-use Domain\SomeSpecificApplication\CreateApp\Controller\CreateAppControllerInterface;
-use Domain\SomeSpecificApplication\CreateApp\UseCase\CreateAppParameter;
-use Domain\SomeSpecificApplication\CreateApp\UseCase\CreateAppUseCase;
+use Package\SomeSpecificApplication\CreateApp\Controller\CreateAppControllerInterface;
+use Package\SomeSpecificApplication\CreateApp\UseCase\CreateAppParameter;
+use Package\SomeSpecificApplication\CreateApp\UseCase\CreateAppUseCase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

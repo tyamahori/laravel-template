@@ -1,8 +1,8 @@
 <?php
 
-namespace Domain\SomeSpecificApplication\CreateApp\Domain\Repository;
+namespace Package\SomeSpecificApplication\CreateApp\Domain\Repository;
 
-use Domain\SomeSpecificApplication\CreateApp\Domain\Entity\LoginUserAccount;
+use Package\SomeSpecificApplication\CreateApp\Domain\Entity\LoginUserAccount;
 
 interface SampleRepositoryInterface
 {

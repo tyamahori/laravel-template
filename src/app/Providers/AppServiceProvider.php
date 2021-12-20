@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Domain\SomeSpecificApplication\CreateApp\Controller\CreateAppControllerInterface;
-use Domain\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;
-use Domain\SomeSpecificApplication\CreateApp\Infrastructure\Controller\CreateAppController;
-use Domain\SomeSpecificApplication\CreateApp\Infrastructure\Repository\AuthLoggerRepository;
+use Package\SomeSpecificApplication\CreateApp\Controller\CreateAppControllerInterface;
+use Package\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;
+use Package\SomeSpecificApplication\CreateApp\Infrastructure\Controller\CreateAppController;
+use Package\SomeSpecificApplication\CreateApp\Infrastructure\Repository\AuthLoggerRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
