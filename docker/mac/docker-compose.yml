@@ -46,7 +46,7 @@ services:
       - ../../src/bootstrap:/opt/${PROJECT_DOMAIN}/bootstrap
       - ../../src/config:/opt/${PROJECT_DOMAIN}/config
       - ../../src/database:/opt/${PROJECT_DOMAIN}/database
-      - ../../src/domain:/opt/${PROJECT_DOMAIN}/domain
+      - ../../src/package:/opt/${PROJECT_DOMAIN}/package
       - ../../src/resources:/opt/${PROJECT_DOMAIN}/resources
       - ../../src/routes:/opt/${PROJECT_DOMAIN}/routes
       - ../../src/tests:/opt/${PROJECT_DOMAIN}/tests
