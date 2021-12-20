@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use Package\SomeSpecificApplication\CreateApp\Presenter\CreateAppControllerInterface;
+use Package\SomeSpecificApplication\CreateApp\Adaptor\CreateAppControllerInterface;
 use Package\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;
 use Package\SomeSpecificApplication\CreateApp\Infrastructure\Controller\CreateAppController;
 use Package\SomeSpecificApplication\CreateApp\Infrastructure\Repository\AuthLoggerRepository;
