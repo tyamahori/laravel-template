@@ -20,11 +20,13 @@ class ExampleTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'message' => 'Successfully created user!',
-                'userProfile' => [
-                    'name' => 'test',
-                    'age' => 16,
-                ],
+                'content' => [
+                    'message' => 'Successfully created user!',
+                    'userProfile' => [
+                        'name' => 'test',
+                        'age' => 16,
+                    ],
+                ]
             ]);
     }
 }

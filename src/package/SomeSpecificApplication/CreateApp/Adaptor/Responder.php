@@ -17,7 +17,7 @@ class Responder
                 'message' => 'Successfully created user!',
                 'userProfile' => [
                     'name' => $response->name,
-                    'age' => $response->name,
+                    'age' => $response->age,
                 ],
             ],
         ];
