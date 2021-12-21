@@ -1,6 +1,6 @@
 <?php
 
-namespace Package\SomeSpecificApplication\CreateApp\Infrastructure\Controller;
+namespace Package\SomeSpecificApplication\CreateApp\Concrete\Adaptor;
 
 use App\Http\Controllers\Controller;
 use Package\SomeSpecificApplication\CreateApp\Adaptor\CreateAppControllerInterface;

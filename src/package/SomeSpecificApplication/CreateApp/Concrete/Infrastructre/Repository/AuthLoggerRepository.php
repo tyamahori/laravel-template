@@ -1,6 +1,6 @@
 <?php
 
-namespace Package\SomeSpecificApplication\CreateApp\Infrastructure\Repository;
+namespace Package\SomeSpecificApplication\CreateApp\Concrete\Infrastructre\Repository;
 
 use Package\SomeSpecificApplication\CreateApp\Domain\Entity\LoginUserAccount;
 use Package\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;

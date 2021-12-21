@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use Package\SomeSpecificApplication\CreateApp\Adaptor\CreateAppControllerInterface;
+use Package\SomeSpecificApplication\CreateApp\Concrete\Adaptor\CreateAppController;
+use Package\SomeSpecificApplication\CreateApp\Concrete\Infrastructre\Repository\AuthLoggerRepository;
 use Package\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;
-use Package\SomeSpecificApplication\CreateApp\Infrastructure\Controller\CreateAppController;
-use Package\SomeSpecificApplication\CreateApp\Infrastructure\Repository\AuthLoggerRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
