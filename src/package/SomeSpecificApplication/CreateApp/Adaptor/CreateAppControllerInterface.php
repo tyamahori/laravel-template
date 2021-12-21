@@ -5,7 +5,7 @@ namespace Package\SomeSpecificApplication\CreateApp\Adaptor;
 interface CreateAppControllerInterface
 {
     /**
-     * @return mixed
+     * 1パブリックメソッドを強制する
      */
-    public function __invoke(): mixed;
+    public function __invoke();
 }
