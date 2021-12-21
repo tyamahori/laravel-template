@@ -5,7 +5,7 @@ namespace Package\SomeSpecificApplication\CreateApp\Adaptor;
 interface CreateAppControllerInterface
 {
     /**
-     * 1パブリックメソッドを強制する
+     * @param Responder $responder
      */
-    public function __invoke();
+    public function __invoke(Responder $responder);
 }
