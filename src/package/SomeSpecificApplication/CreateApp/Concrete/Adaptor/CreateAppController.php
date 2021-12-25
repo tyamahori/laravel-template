@@ -4,7 +4,6 @@ namespace Package\SomeSpecificApplication\CreateApp\Concrete\Adaptor;
 
 use App\Http\Controllers\Controller;
 use Package\SomeSpecificApplication\CreateApp\Adaptor\CreateAppControllerInterface;
-use Package\SomeSpecificApplication\CreateApp\Adaptor\Responder;
 use Package\SomeSpecificApplication\CreateApp\UseCase\CreateAppParameter;
 use Package\SomeSpecificApplication\CreateApp\UseCase\CreateAppUseCase;
 use Illuminate\Http\JsonResponse;
@@ -27,12 +26,10 @@ class CreateAppController extends Controller implements CreateAppControllerInter
     }
 
     /**
-     * @param Responder $responder
      * @return JsonResponse
      */
-    public function __invoke(
-        Responder $responder
-    ): JsonResponse {
+    public function __invoke(): JsonResponse
+    {
         $parameter = new CreateAppParameter([
             'name' => $this->request->input('user_name'),
             'age' => $this->request->input('user_age'),
@@ -40,6 +37,14 @@ class CreateAppController extends Controller implements CreateAppControllerInter
 
         $response = $this->createAppUseCase->__invoke($parameter);
 
-        return response()->json($responder->toArray($response));
+        return new JsonResponse([
+            'content' => [
+                'message' => 'Successfully created user!',
+                'userProfile' => [
+                    'name' => $response->name,
+                    'age' => $response->age,
+                ],
+            ],
+        ]);
     }
 }
