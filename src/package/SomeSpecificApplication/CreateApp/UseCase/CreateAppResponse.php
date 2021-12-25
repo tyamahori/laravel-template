@@ -26,7 +26,7 @@ class CreateAppResponse
         }
 
         if (empty($output['age']) && !is_int($output['age'])) {
-            throw new InvalidArgumentException('Name is required');
+            throw new InvalidArgumentException('Age is required');
         }
 
         $this->name = $output['name'];
