@@ -19,6 +19,11 @@ COPY --from=build /usr/local/bin/dockerize /usr/bin/dockerize
 COPY --from=node /usr/local/bin/ /usr/local/bin/
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 
+# php.ini
+COPY ./docker/mac/php/php.ini /usr/local/etc/php/php.ini
+# php.conf
+COPY ./docker/mac/php/zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
+
 # package install and setup
 RUN set -eux \
  && apk add --update-cache --no-cache openssl git autoconf postgresql-dev libtool make gcc g++ libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev python3 postgresql-client \
@@ -31,4 +36,6 @@ RUN set -eux \
 
 # project
 ARG PROJECT_DOMAIN
-COPY ./ /opt/$PROJECT_DOMAIN
+COPY ./src /opt/$PROJECT_DOMAIN
+
+RUN chown -R www-data:www-data /opt/$PROJECT_DOMAIN/storage

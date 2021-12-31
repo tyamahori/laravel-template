@@ -35,8 +35,8 @@ services:
 
   app:
     build:
-      context: ../../src
-      dockerfile: ../docker/mac/php/Dockerfile
+      context: ../..
+      dockerfile: ./docker/mac/php/Dockerfile
       args:
         - PROJECT_DOMAIN=${PROJECT_DOMAIN}
     container_name: ${COMPOSE_PROJECT_NAME}-${APP_SUFFIX}
@@ -57,10 +57,6 @@ services:
       - ../../src/composer.lock:/opt/${PROJECT_DOMAIN}/composer.lock
       - ../../src/phpunit.xml:/opt/${PROJECT_DOMAIN}/phpunit.xml
       - ../../src/server.php:/opt/${PROJECT_DOMAIN}/server.php
-      # php.ini
-      - ./php/php.ini:/usr/local/etc/php/php.ini
-      # php.conf
-      - ./php/zzz-www.conf:/usr/local/etc/php-fpm.d/zzz-www.conf
       # volumes
       - vendor-volume:/opt/${PROJECT_DOMAIN}/vendor
       - storage-volume:/opt/${PROJECT_DOMAIN}/storage
