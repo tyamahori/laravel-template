@@ -79,7 +79,7 @@ case "$1" in
 
   ${RUN_APP} dockerize -timeout 60s -wait tcp://"${DB}":5432
 
-  ${RUN_APP} chmod 777 -R storage
+  ${RUN_APP} chown -R www-data:www-data storage
   ${RUN_APP} composer install
   ${RUN_APP} composer dump-autoload
 
@@ -128,7 +128,7 @@ case "$1" in
 
   docker-compose up -d
 
-  ${RUN_APP} chmod 777 -R storage
+  ${RUN_APP} chown -R www-data:www-data storage
   ${RUN_APP} composer install
   ${RUN_APP} composer dump-autoload
 
