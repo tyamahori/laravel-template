@@ -23,9 +23,9 @@ services:
       - ./nginx/ssl/cert.pem:/etc/ssl/certs/cert.pem
       - ./nginx/ssl/key.pem:/etc/ssl/certs/key.pem
       # volume
-      - socket-volume:/var/run/php-fpm
-      - schemaspy-volume:/opt/schema
-      - public-volume:/opt/${PROJECT_DOMAIN}/public
+      - tyamahori-socket:/var/run/php-fpm
+      - tyamahori-schemaspy:/opt/schema
+      - tyamahori-public:/opt/${PROJECT_DOMAIN}/public
     depends_on:
       - app
     networks:
@@ -58,11 +58,11 @@ services:
       - ../../src/phpunit.xml:/opt/${PROJECT_DOMAIN}/phpunit.xml
       - ../../src/server.php:/opt/${PROJECT_DOMAIN}/server.php
       # volumes
-      - vendor-volume:/opt/${PROJECT_DOMAIN}/vendor
-      - storage-volume:/opt/${PROJECT_DOMAIN}/storage
-      - socket-volume:/var/run/php-fpm
-      - node-volume:/opt/${PROJECT_DOMAIN}/node_modules
-      - public-volume:/opt/${PROJECT_DOMAIN}/public
+      - tyamahori-vendor:/opt/${PROJECT_DOMAIN}/vendor
+      - tyamahori-storage:/opt/${PROJECT_DOMAIN}/storage
+      - tyamahori-socket:/var/run/php-fpm
+      - tyamahori-node:/opt/${PROJECT_DOMAIN}/node_modules
+      - tyamahori-public:/opt/${PROJECT_DOMAIN}/public
     working_dir: /opt/${PROJECT_DOMAIN}
     env_file:
       - .env
@@ -77,7 +77,7 @@ services:
     build: postgre/schemaspy
     working_dir: /app
     volumes:
-      - schemaspy-volume:/output
+      - tyamahori-schemaspy:/output
     env_file:
       - .env
     depends_on:
@@ -91,7 +91,7 @@ services:
       # file
       - ./postgre/sql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
       # volumes
-      - db-volume:/var/lib/postgresql/data
+      - tyamahori-db:/var/lib/postgresql/data
     ports:
       - "${LOCAL_IP}:5432:5432"
     env_file:
@@ -101,7 +101,7 @@ services:
     image: redis:6.0-alpine
     container_name: ${COMPOSE_PROJECT_NAME}-${REDIS_SUFFIX}
     volumes:
-      - redis-volume:/data
+      - tyamahori-redis:/data
     command: redis-server --appendonly yes
     env_file:
       - .env
@@ -134,8 +134,8 @@ services:
       - .env
     command: server /export --console-address ":9001"
     volumes:
-      - s3-vlomue:/export
-      - s3-config-vlomue:/root/.minio
+      - tyamahori-s3:/export
+      - tyamahori-s3-config:/root/.minio
 
 networks:
   default:
@@ -143,23 +143,23 @@ networks:
     name: ${NETWORK_NAME}
 
 volumes:
-  vendor-volume:
+  tyamahori-vendor:
     name: ${COMPOSE_PROJECT_NAME}-vendor
-  storage-volume:
+  tyamahori-storage:
     name: ${COMPOSE_PROJECT_NAME}-storage
-  redis-volume:
+  tyamahori-redis:
     name: ${COMPOSE_PROJECT_NAME}-redis
-  db-volume:
+  tyamahori-db:
     name: ${COMPOSE_PROJECT_NAME}-db
-  socket-volume:
+  tyamahori-socket:
     name: ${COMPOSE_PROJECT_NAME}-socket
-  schemaspy-volume:
+  tyamahori-schemaspy:
     name: ${COMPOSE_PROJECT_NAME}-schemaspy
-  node-volume:
+  tyamahori-node:
     name: ${COMPOSE_PROJECT_NAME}-node
-  public-volume:
+  tyamahori-public:
     name: ${COMPOSE_PROJECT_NAME}-public
-  s3-vlomue:
+  tyamahori-s3:
     name: ${COMPOSE_PROJECT_NAME}-s3
-  s3-config-vlomue:
+  tyamahori-s3-config:
     name: ${COMPOSE_PROJECT_NAME}-s3-config
