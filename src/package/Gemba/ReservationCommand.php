@@ -42,14 +42,17 @@ class ReservationCommand extends Command
 
         $finalReservation = (new Reservation($feesByFactory))
             ->add(FeeType::CHILD->fee())
-            ->add(FeeType::ADULT->fee());
+            ->add(FeeType::ADULT->fee())
+            ->add(FeeType::from('adult')->fee());
+
+        $state0 = PaymentState::from('pending');
+
 
         $state = PaymentState::ACCEPTED
-            ->proceed(PaymentState::PAID)
-            ->proceed(PaymentState::WAITING);
+            ->proceed(PaymentState::PAID);
 
-        $nextState = $state->proceed(PaymentState::PAID);
+        $nextState = $state;
 
-        dd($nextState, $feesByFactory, $feesFeeType, $finalReservation, $finalReservation->totalYen(), PaymentState::allStatus());
+        dd($state0, $nextState, $feesByFactory, $feesFeeType, $finalReservation, $finalReservation->totalYen(), PaymentState::allStatus());
     }
 }

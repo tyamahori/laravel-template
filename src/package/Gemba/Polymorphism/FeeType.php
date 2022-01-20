@@ -4,10 +4,10 @@ namespace Package\Gemba\Polymorphism;
 
 use InvalidArgumentException;
 
-enum FeeType
+enum FeeType: string
 {
-    case ADULT;
-    case CHILD;
+    case ADULT = 'adult';
+    case CHILD = 'child';
 
     /**
      * @return FeeInterface
