@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Package\Gemba\ReservationCommand;
+use Package\Gemba\SampleCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -13,7 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \Package\Gemba\SampleCommand::class,
+        SampleCommand::class,
+        ReservationCommand::class,
     ];
 
     /**
