@@ -47,11 +47,8 @@ class ReservationCommand extends Command
 
         $state0 = PaymentState::from('pending');
 
-
-        $state = PaymentState::ACCEPTED
+        $nextState = PaymentState::ACCEPTED
             ->proceed(PaymentState::PAID);
-
-        $nextState = $state;
 
         dd($state0, $nextState, $feesByFactory, $feesFeeType, $finalReservation, $finalReservation->totalYen(), PaymentState::allStatus());
     }
