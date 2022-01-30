@@ -49,4 +49,15 @@ class SingleAnnualIncome
 
         return new SingleAnnualIncome($newIncome);
     }
+
+    /**
+     * @return string
+     */
+    public function annualIncomeForDisplay(): string
+    {
+        $roundedNumber = round($this->annualIncome);
+        $formattedNumber = number_format($roundedNumber);
+
+        return "$formattedNumber 万円";
+    }
 }

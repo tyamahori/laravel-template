@@ -29,4 +29,15 @@ class PairAnnualIncome
     {
         return $this->annualIncome->rawAnnualIncome() + $this->anotherAnnualIncome->rawAnnualIncome();
     }
+
+    /**
+     * @return string
+     */
+    public function annualIncomeForView(): string
+    {
+        $total = $this->annualIncome->value() + $this->anotherAnnualIncome->value();
+        $format = number_format($total);
+
+        return "$format 万円";
+    }
 }

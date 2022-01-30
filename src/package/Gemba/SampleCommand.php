@@ -61,6 +61,7 @@ class SampleCommand extends Command
         $singleIncome = new SingleAnnualIncome(1000);
         echo $singleIncome->value() . PHP_EOL;
         echo $singleIncome->rawAnnualIncome() . PHP_EOL;
+        echo $singleIncome->annualIncomeForDisplay() . PHP_EOL;
 
         echo "----" . PHP_EOL;
 
@@ -77,5 +78,6 @@ class SampleCommand extends Command
 
         echo $pairIncome->value() . PHP_EOL;
         echo $pairIncome->rawValue() . PHP_EOL;
+        echo $pairIncome->annualIncomeForView() . PHP_EOL;
     }
 }
