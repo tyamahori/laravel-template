@@ -3,6 +3,8 @@
 namespace Package\Gemba;
 
 use Illuminate\Console\Command;
+use Package\Gemba\BuilderPattern\SampleDto;
+use Package\Gemba\BuilderPattern\SampleDtoBuilder;
 use Package\Gemba\Collection\Family;
 use Package\Gemba\Collection\FamilyMember;
 use Package\Gemba\ValueObject\PairAnnualIncome;
@@ -12,24 +14,38 @@ class SampleCommand extends Command
 {
     /**
      * The name and signature of the console command.
-     *
      * @var string
      */
     protected $signature = 'command:sample';
 
     /**
      * The console command description.
-     *
      * @var string
      */
     protected $description = 'Command description';
 
     /**
      * Execute the console command.
+     * @param SampleDtoBuilder $sampleDtoBuilder
      * @return void
      */
-    public function handle(): void
-    {
+    public function handle(
+        SampleDtoBuilder $sampleDtoBuilder
+    ): void {
+
+        $sampleDto = $sampleDtoBuilder
+            ->setFrom('from@email.com')
+            ->setTo('to@email.com')
+            ->setSubject('subject')
+            ->setBody('body')
+            ->build();
+
+
+        echo $sampleDto->getSubject();
+
+        var_dump($sampleDto->getTo());
+
+
         $familyMembers = [
             new FamilyMember('おとーちゃん', true),
             new FamilyMember('おかーちゃん', true),
