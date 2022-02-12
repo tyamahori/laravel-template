@@ -3,8 +3,10 @@
 namespace Package\Gemba;
 
 use Illuminate\Console\Command;
-use Package\Gemba\BuilderPattern\SampleDto;
-use Package\Gemba\BuilderPattern\SampleDtoBuilder;
+use Package\Gemba\BankAccount\AccountId;
+use Package\Gemba\BankAccount\BankAccount;
+use Package\Gemba\BankAccount\CurrentAmount;
+use Package\Gemba\BankAccount\WithdrawAmount;
 use Package\Gemba\Collection\Family;
 use Package\Gemba\Collection\FamilyMember;
 use Package\Gemba\ValueObject\PairAnnualIncome;
@@ -26,25 +28,19 @@ class SampleCommand extends Command
 
     /**
      * Execute the console command.
-     * @param SampleDtoBuilder $sampleDtoBuilder
      * @return void
      */
-    public function handle(
-        SampleDtoBuilder $sampleDtoBuilder
-    ): void {
+    public function handle(): void {
 
-        $sampleDto = $sampleDtoBuilder
-            ->setFrom('from@email.com')
-            ->setTo('to@email.com')
-            ->setSubject('subject')
-            ->setBody('body')
-            ->build();
+        $currentBankAccount = new BankAccount(new AccountId('someId1234'), new CurrentAmount(900));
 
+        $bankAccountWithNewAmount = $currentBankAccount
+            ->withdraw(new WithdrawAmount(-100))
+            ->withdraw(new WithdrawAmount(-100));
 
-        echo $sampleDto->getSubject();
+        echo $bankAccountWithNewAmount->newAmount()->amount;
 
-        var_dump($sampleDto->getTo());
-
+        echo "----" . PHP_EOL;
 
         $familyMembers = [
             new FamilyMember('おとーちゃん', true),
