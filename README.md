@@ -62,9 +62,10 @@ GUIツールなどでのアクセス設定で必要となります。
 
 # 開発URL
 
-| 項目名    | URL  |
-| ----      | ---- |
-| Laravel   | https://tyamahori.love/  |
-| SchemaSpy | https://schema.tyamahori.love/  |
-| Mailhog   | https://mail.tyamahori.love/  |
-| Minio     | https://minio.tyamahori.love/ <br> ID: `tyamahori` Pass: `tyamahori` |
+| 項目名            | URL                                                                  |
+|----------------|----------------------------------------------------------------------|
+| Laravel        | https://tyamahori.love/                                              |
+| SchemaSpy      | https://schema.tyamahori.love/                                       |
+| Mailhog        | https://mail.tyamahori.love/                                         |
+| Minio          | https://minio.tyamahori.love/ <br> ID: `tyamahori` Pass: `tyamahori` |
+| Uploaded Files | https://file.tyamahori.love/tyamahori/*****                          |
