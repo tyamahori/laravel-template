@@ -29,8 +29,8 @@ $ cd docker/mac && ./mac create
 
 | 項目名     | バージョン |
 | ---------- | ------     |
-| PHP        | 8.1.0      |
-| Laravel    | 8.76.2     |
+| PHP        | 8.1.2      |
+| Laravel    | 9.1.0     |
 | PostgreSQL | 13.4       |
 | Redis      | 6.0        |
 
