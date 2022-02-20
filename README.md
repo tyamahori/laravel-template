@@ -68,4 +68,4 @@ GUIツールなどでのアクセス設定で必要となります。
 | SchemaSpy      | https://schema.tyamahori.love/                                       |
 | Mailhog        | https://mail.tyamahori.love/                                         |
 | Minio          | https://minio.tyamahori.love/ <br> ID: `tyamahori` Pass: `tyamahori` |
-| Uploaded Files | https://file.tyamahori.love/tyamahori/*****                          |
+| Uploaded Files | https://file.tyamahori.love/tyamahori/*****<br/>                          |
