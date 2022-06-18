@@ -1,8 +1,21 @@
 FROM composer:2 as build
+
 ENV DOCKERIZE_VERSION=v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
  && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
  && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
+ENV SQLDEF_VERSION=v0.11.59
+RUN /bin/sh -c 'set -ex && ARCH=`uname -m` && \
+        if [ "$ARCH" == "aarch64" ]; then \
+           echo "$ARCH" && wget https://github.com/k0kubun/sqldef/releases/download/$SQLDEF_VERSION/psqldef_linux_arm64.tar.gz \
+            && tar -C /usr/local/bin -xzvf psqldef_linux_arm64.tar.gz \
+            && rm psqldef_linux_arm64.tar.gz; \
+        else \
+           echo "$ARCH" && wget https://github.com/k0kubun/sqldef/releases/download/$SQLDEF_VERSION/psqldef_linux_386.tar.gz \
+            && tar -C /usr/local/bin -xzvf psqldef_linux_386.tar.gz \
+            && rm psqldef_linux_386.tar.gz; \
+        fi'
 
 FROM php:8.1-fpm-alpine3.15
 
@@ -16,6 +29,8 @@ COPY --from=build /usr/local/bin/dockerize /usr/bin/dockerize
 
 COPY --from=node:16-alpine3.13 /usr/local/bin/ /usr/local/bin/
 COPY --from=node:16-alpine3.13 /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+COPY --from=build /usr/local/bin/psqldef /usr/bin/psqldef
 
 # php.ini
 COPY ./docker/mac/php/php.ini /usr/local/etc/php/php.ini
