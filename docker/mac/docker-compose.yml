@@ -8,8 +8,8 @@ services:
     image: nginx:1.17.9-alpine
     container_name: ${COMPOSE_PROJECT_NAME}-${WEB_SUFFIX}
     working_dir: /opt/${PROJECT_DOMAIN}
-    env_file:
-      - .env
+    environment:
+      - PROJECT_DOMAIN=${PROJECT_DOMAIN}
     command: >
       /bin/sh -c
       "envsubst '
@@ -73,15 +73,22 @@ services:
 
   schemaspy:
     container_name: ${COMPOSE_PROJECT_NAME}-${SCHEMA_SUFFIX}
-    build: postgre/schemaspy
+    image: schemaspy/schemaspy:snapshot
     working_dir: /app
     volumes:
       - tyamahori-schemaspy:/output
-    env_file:
-      - .env
     depends_on:
       - db
-    tty: true
+    command: >
+      -t pgsql
+      -u "${DB_USERNAME}"
+      -host "${COMPOSE_PROJECT_NAME}-${DB_SUFFIX}"
+      -port "${DB_PORT}"
+      -db "${DB_DATABASE}"
+      -p "${DB_PASSWORD}"
+      -s "${DB_SCHEMA}"
+    profiles:
+      - schema
 
   db:
     image: postgres:13.4-alpine
@@ -116,15 +123,16 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-${BUCKET_SUFFIX}
     depends_on:
       - s3
-    env_file:
-      - .env
     entrypoint: >
       /bin/sh -c "
-      until (/usr/bin/mc config host add myminio http://${COMPOSE_PROJECT_NAME}-${S3_SUFFIX}:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}) do echo '...waiting...' && sleep 1; done;
-      /usr/bin/mc mb myminio/${AWS_BUCKET};
-      /usr/bin/mc policy set public myminio/${AWS_BUCKET};
+      until (mc config host add myminio http://${COMPOSE_PROJECT_NAME}-${S3_SUFFIX}:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}) do echo '...waiting...' && sleep 1; done;
+      mc mb myminio/${AWS_BUCKET};
+      mc policy set public myminio/${AWS_BUCKET};
       exit 0;
       "
+    profiles:
+      - bucket
+
 
   s3:
     image: minio/minio:latest

@@ -4,8 +4,6 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
  && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
  && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-FROM node:16-alpine as node
-
 FROM php:8.1-fpm-alpine3.15
 
 ENV COMPOSER_HOME=/root/composer \
@@ -16,8 +14,8 @@ ENV COMPOSER_HOME=/root/composer \
 COPY --from=build /usr/bin/composer /usr/bin/composer
 COPY --from=build /usr/local/bin/dockerize /usr/bin/dockerize
 
-COPY --from=node /usr/local/bin/ /usr/local/bin/
-COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --from=node:16-alpine3.13 /usr/local/bin/ /usr/local/bin/
+COPY --from=node:16-alpine3.13 /usr/local/lib/node_modules /usr/local/lib/node_modules
 
 # php.ini
 COPY ./docker/mac/php/php.ini /usr/local/etc/php/php.ini
@@ -37,5 +35,4 @@ RUN set -eux \
 # project
 ARG PROJECT_DOMAIN
 COPY ./src /opt/$PROJECT_DOMAIN
-
-RUN chown -R www-data:www-data /opt/$PROJECT_DOMAIN/storage
+COPY --chown=www-data:www-data ./src/storage /opt/$PROJECT_DOMAIN/storage
