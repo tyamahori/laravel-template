@@ -87,7 +87,7 @@ case "$1" in
   ${RUN_APP} ./artisan ide-helper:models --nowrite
 
   docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
-  docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
 
   ${RUN_SCHEMA} java -jar schemaspy.jar \
       -o /output -t pgsql \
@@ -136,7 +136,7 @@ case "$1" in
   ${RUN_APP} ./artisan ide-helper:models --nowrite
 
   docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
-  docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
 
   docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
   docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
@@ -241,7 +241,7 @@ case "$1" in
 "yarn")
   rm -rf ${LOCAL_NODE_DIR}
   ${RUN_APP} yarn "${@:2}"
-  docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
   ;;
 
 "watch")

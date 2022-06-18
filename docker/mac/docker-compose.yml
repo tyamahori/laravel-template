@@ -61,7 +61,6 @@ services:
       - tyamahori-vendor:/opt/${PROJECT_DOMAIN}/vendor
       - tyamahori-storage:/opt/${PROJECT_DOMAIN}/storage
       - tyamahori-socket:/var/run/php-fpm
-      - tyamahori-node:/opt/${PROJECT_DOMAIN}/node_modules
       - tyamahori-public:/opt/${PROJECT_DOMAIN}/public
     working_dir: /opt/${PROJECT_DOMAIN}
     env_file:
