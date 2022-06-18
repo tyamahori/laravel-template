@@ -27,12 +27,12 @@ $ cd docker/mac && ./mac create
 
 # アプリケーション情報
 
-| 項目名     | バージョン |
-| ---------- | ------     |
-| PHP        | 8.1.2      |
-| Laravel    | 9.1.0     |
-| PostgreSQL | 13.4       |
-| Redis      | 6.0        |
+| 項目名     | バージョン  |
+| ---------- |--------|
+| PHP        | 8.1.7  |
+| Laravel    | 9.17.0 |
+| PostgreSQL | 13.4   |
+| Redis      | 6.0    |
 
 # 開発ツール情報
 
@@ -62,10 +62,10 @@ GUIツールなどでのアクセス設定で必要となります。
 
 # 開発URL
 
-| 項目名            | URL                                                                  |
-|----------------|----------------------------------------------------------------------|
-| Laravel        | https://tyamahori.love/                                              |
-| SchemaSpy      | https://schema.tyamahori.love/                                       |
-| Mailhog        | https://mail.tyamahori.love/                                         |
+| 項目名            | URL                                                            |
+|----------------|----------------------------------------------------------------|
+| Laravel        | https://tyamahori.love/                                        |
+| SchemaSpy      | https://schema.tyamahori.love/                                 |
+| Mailhog        | https://mail.tyamahori.love/                                   |
 | Minio          | https://minio.tyamahori.love/ <br> ID: `tyamahori` Pass: `tyamahori` |
-| Uploaded Files | https://file.tyamahori.love/tyamahori/*****<br/>                          |
+| Uploaded Files | https://file.tyamahori.love/tyamahori/*****                    |
