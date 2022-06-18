@@ -18,7 +18,6 @@
     "league/flysystem-aws-s3-v3": "^3.0"
   },
   "require-dev": {
-    "roave/security-advisories": "dev-latest",
     "barryvdh/laravel-debugbar": "^3.6",
     "barryvdh/laravel-ide-helper": "^2.10",
     "brianium/paratest": "^6.4",
