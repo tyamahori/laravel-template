@@ -15,6 +15,7 @@ yarn-error.log
 ### IDE ###
 .idea
 src/_ide_helper*.php
+src/.phpstorm.meta.php
 
 ### mac ###
 .DS_Store

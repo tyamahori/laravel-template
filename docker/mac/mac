@@ -46,7 +46,7 @@ RUN_SCHEMA="docker exec -it ${SCHEMA}"
 # コンテナ内のパス定義
 REMOTE_APP_DIR="/opt/${PROJECT_DOMAIN}"
 REMOTE_VENDOR_DIR="${REMOTE_APP_DIR}/vendor"
-REMOTE_NODE_DIR="${REMOTE_APP_DIR}/node_modules"
+#REMOTE_NODE_DIR="${REMOTE_APP_DIR}/node_modules"
 
 # ローカルのパス定義
 LOCAL_APP_DIR="../../src"
@@ -89,8 +89,14 @@ case "$1" in
   docker compose run --rm bucket
 
   ${RUN_APP} ./artisan migrate:refresh --seed
+
   ${RUN_APP} ./artisan ide-helper:generate
   ${RUN_APP} ./artisan ide-helper:models --nowrite
+  ${RUN_APP} ./artisan ide-helper:meta
+
+  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
+  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
+  docker cp "${APP}":"${REMOTE_APP_DIR}"/.phpstorm.meta.php ${LOCAL_APP_DIR}
 
   docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
   # docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
@@ -173,8 +179,11 @@ case "$1" in
 "ide")
   ${RUN_APP} ./artisan ide-helper:generate
   ${RUN_APP} ./artisan ide-helper:models --nowrite
+  ${RUN_APP} ./artisan ide-helper:meta
+
   docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
   docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
+  docker cp "${APP}":"${REMOTE_APP_DIR}"/.phpstorm.meta.php ${LOCAL_APP_DIR}
   ;;
 
 "db:refresh")
