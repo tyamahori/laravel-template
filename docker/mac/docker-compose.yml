@@ -79,7 +79,7 @@ services:
       - tyamahori-schemaspy:/output
     depends_on:
       - db
-    command: >
+    command:
       -t pgsql
       -u "${DB_USERNAME}"
       -host "${COMPOSE_PROJECT_NAME}-${DB_SUFFIX}"
