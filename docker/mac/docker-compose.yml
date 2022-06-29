@@ -133,7 +133,6 @@ services:
     profiles:
       - bucket
 
-
   s3:
     image: minio/minio:latest
     container_name: ${COMPOSE_PROJECT_NAME}-${S3_SUFFIX}

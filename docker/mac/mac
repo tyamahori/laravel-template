@@ -53,13 +53,6 @@ LOCAL_APP_DIR="../../src"
 LOCAL_VENDOR_DIR="${LOCAL_APP_DIR}/vendor"
 LOCAL_NODE_DIR="${LOCAL_APP_DIR}/node_modules"
 
-# その他値設定
-DB_USER=$(grep DB_USERNAME .env | cut -d '=' -f2 | head -1)
-DB_PORT=$(grep DB_PORT .env | cut -d '=' -f2 | head -1)
-DB_DATABASE=$(grep DB_DATABASE .env | cut -d '=' -f2 | head -1)
-DB_PASSWORD=$(grep DB_PASSWORD .env | cut -d '=' -f2 | head -1)
-DB_SCHEMA=$(grep DB_SCHEMA .env | cut -d '=' -f2 | head -1)
-
 case "$1" in
 
 "create")
@@ -199,15 +192,7 @@ case "$1" in
   ${RUN_APP} ./artisan migrate:refresh
   ${RUN_APP} ./artisan db:seed
 
-  ${RUN_SCHEMA} java -jar schemaspy.jar \
-      -o /output -t pgsql \
-      -u "${DB_USER}" \
-      -dp /app \
-      -host "${DB}" \
-      -port "${DB_PORT}" \
-      -db "${DB_DATABASE}" \
-      -p "${DB_PASSWORD}" \
-      -s "${DB_SCHEMA}"
+  docker compose run --rm schemaspy
   ;;
 
 "composer")
