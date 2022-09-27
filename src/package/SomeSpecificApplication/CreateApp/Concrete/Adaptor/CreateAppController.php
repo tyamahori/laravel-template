@@ -19,12 +19,6 @@ class CreateAppController extends Controller implements CreateAppControllerInter
         private readonly Request $request,
         private readonly CreateAppUseCase $createAppUseCase,
     ) {
-        $this->middleware(static function (Request $request) {
-            $request->validate([
-                'user_name' => ['required', 'string', 'max:255'],
-                'user_age' => ['required', 'integer', 'min:0', 'max:40'],
-            ]);
-        });
     }
 
     /**
@@ -32,6 +26,11 @@ class CreateAppController extends Controller implements CreateAppControllerInter
      */
     public function __invoke(): JsonResponse
     {
+        $this->request->validate([
+            'user_name' => ['required', 'string', 'max:255'],
+            'user_age' => ['required', 'integer', 'min:0', 'max:40'],
+        ]);
+
         $parameter = new CreateAppParameter([
             'name' => $this->request->input('user_name'),
             'age' => $this->request->input('user_age'),
