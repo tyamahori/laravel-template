@@ -16,13 +16,15 @@ class CreateAppController extends Controller implements CreateAppControllerInter
      * @param CreateAppUseCase $createAppUseCase
      */
     public function __construct(
-        private Request $request,
-        private CreateAppUseCase $createAppUseCase,
+        private readonly Request $request,
+        private readonly CreateAppUseCase $createAppUseCase,
     ) {
-        $this->validate($this->request, [
-            'user_name' => ['required', 'string', 'max:255'],
-            'user_age' => ['required', 'integer', 'min:0', 'max:40'],
-        ]);
+        $this->middleware(static function (Request $request) {
+            $request->validate([
+                'user_name' => ['required', 'string', 'max:255'],
+                'user_age' => ['required', 'integer', 'min:0', 'max:40'],
+            ]);
+        });
     }
 
     /**
