@@ -215,4 +215,8 @@ case "$1" in
 "test")
   docker exec -i "${APP}" ./vendor/bin/phpunit
   ;;
+
+"runn")
+  docker compose run --rm runn
+  ;;
 esac
