@@ -1,0 +1,26 @@
+desc: runnのサンプルテスト
+runners:
+  req: ${RUNN_API_ENDPOINT}/api/
+  db: postgres://tyamahori:tyamahori@db:5432/tyamahori sslmode=disable
+vars:
+  userName: サンプル
+  userAge: 30
+steps:
+  query:
+    db:
+      query: SELECT * FROM migrations WHERE id = 1
+  accessSamplePoint:
+    req:
+      /runn:
+        post:
+          headers:
+            Accept: application/json
+          body:
+            application/json:
+              user_name: "{{ vars.userName }}"
+              user_age: "{{ vars.userAge }}"
+    test: current.res.status == 200
+      && current.res.body.userAge == vars.userAge
+      && current.res.body.userName == vars.userName
+      && steps.query.rows[0].id == 1
+  dump: steps.query.rows[0]

@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# .env ファイルを .env.localからコピーして生成する
-if [ ! -e '.env' ]; then
-    echo envファイルを生成します。
-    cp .env.local .env
-    echo envファイルが生成されました。
-fi
-
 # localのループバックIPを一つ設定する
 LOCAL_IP=$(grep LOCAL_IP .env | cut -d '=' -f2)
 
@@ -94,8 +87,8 @@ case "$1" in
   docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
   # docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
 
-  docker images
-  docker ps -a
+  docker compose images
+  docker compose ps -a
   ;;
 
 "rebuild")
@@ -104,8 +97,8 @@ case "$1" in
   docker compose up -d --build
   docker container prune -f
   docker image prune -f
-  docker images
-  docker ps -a
+  docker compose images
+  docker compose ps -a
   ;;
 
 "setup")
@@ -133,15 +126,15 @@ case "$1" in
 
   docker container prune -f
   docker image prune -f
-  docker images
-  docker ps -a
+  docker compose images
+  docker compose ps -a
   ;;
 
 "up")
 # docker-composeの単純な再起動
   docker compose down
   docker compose up -d
-  docker ps -a
+  docker compose ps -a
   ;;
 
 "down")
@@ -149,8 +142,8 @@ case "$1" in
   docker compose down
   docker container prune -f
   docker image prune -f
-  docker images
-  docker ps -a
+  docker compose images
+  docker compose ps -a
   ;;
 
 "https")
@@ -221,5 +214,9 @@ case "$1" in
 
 "test")
   docker exec -i "${APP}" ./vendor/bin/phpunit
+  ;;
+
+"runn")
+  docker compose run --rm runn
   ;;
 esac

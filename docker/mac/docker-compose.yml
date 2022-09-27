@@ -143,6 +143,19 @@ services:
       - tyamahori-s3:/export
       - tyamahori-s3-config:/root/.minio
 
+  runn:
+    image: ghcr.io/k1low/runn
+    container_name: ${COMPOSE_PROJECT_NAME}-${RUNN_SUFFIX}
+    env_file:
+      - .env
+    working_dir: /scenario
+    command:
+      - run *.yml
+    volumes:
+      - ../../src/tests/Scenario:/scenario
+    profiles:
+      - runn
+
 networks:
   default:
     external: true

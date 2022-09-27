@@ -1,5 +1,6 @@
 <?php
 
+use Package\ScenariotestSampleApplication\ScenarioSample\Adaptor\RunnSampleController;
 use Package\SomeSpecificApplication\CreateApp\Adaptor\CreateAppControllerInterface;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('sample', CreateAppControllerInterface::class)->name('sample');
+
+Route::post('runn', RunnSampleController::class)->name('runn');
