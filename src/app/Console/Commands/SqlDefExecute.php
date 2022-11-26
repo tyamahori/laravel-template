@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Console\Commands;
 
@@ -29,11 +30,11 @@ class SqlDefExecute extends Command
         Repository $config,
         Application $application
     ): void {
-
         $environment = $application->environment();
 
         if ($environment === 'testing') {
             $this->error('This command is not available in testing environment.');
+
             return;
         }
 
@@ -47,6 +48,7 @@ class SqlDefExecute extends Command
         $dryRunCommandOutPut = shell_exec($dryRunCommand);
         if (!$dryRunCommandOutPut) {
             $this->info('Failed to execute command.');
+
             return;
         }
         $this->info($dryRunCommandOutPut);

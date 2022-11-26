@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Console\Commands;
 
@@ -29,7 +30,6 @@ class SqlDefExport extends Command
         Repository $config,
         Application $application
     ): void {
-
         $schemaFile = $application->databasePath() . '/schema.sql';
         $dbUser = $config->get('database.connections.pgsql.username');
         $dbHost = $config->get('database.connections.pgsql.host');

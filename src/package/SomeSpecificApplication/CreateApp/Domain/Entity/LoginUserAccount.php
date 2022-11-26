@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Package\SomeSpecificApplication\CreateApp\Domain\Entity;
 
@@ -9,19 +10,20 @@ class LoginUserAccount
 {
     /**
      * @param Name $name
-     * @param Age  $age
+     * @param Age $age
      */
     private function __construct(
         public readonly Name $name,
         public readonly Age $age
-    ) {}
+    ) {
+    }
 
     /**
      * @param Name $name
-     * @param Age  $age
+     * @param Age $age
      * @return LoginUserAccount
      */
-    public static function new(Name $name, Age $age): LoginUserAccount
+    public static function new(Name $name, Age $age): self
     {
         return new self($name, $age);
     }
@@ -30,7 +32,7 @@ class LoginUserAccount
      * @param Name $name
      * @return LoginUserAccount
      */
-    public function updateName(Name $name): LoginUserAccount
+    public function updateName(Name $name): self
     {
         return new self($name, $this->age);
     }
@@ -39,7 +41,7 @@ class LoginUserAccount
      * @param Age $age
      * @return LoginUserAccount
      */
-    public function updateAge(Age $age): LoginUserAccount
+    public function updateAge(Age $age): self
     {
         return new self($this->name, $age);
     }

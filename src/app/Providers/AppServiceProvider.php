@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Providers;
 
+use Illuminate\Support\ServiceProvider;
 use Package\SomeSpecificApplication\CreateApp\Adaptor\CreateAppControllerInterface;
 use Package\SomeSpecificApplication\CreateApp\Concrete\Adaptor\CreateAppController;
 use Package\SomeSpecificApplication\CreateApp\Concrete\Infrastructre\Repository\AuthLoggerRepository;
 use Package\SomeSpecificApplication\CreateApp\Domain\Repository\SampleRepositoryInterface;
-use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

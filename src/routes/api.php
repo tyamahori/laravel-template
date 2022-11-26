@@ -1,7 +1,8 @@
 <?php
+declare(strict_types=1);
 
-use Package\SomeSpecificApplication\CreateApp\Adaptor\CreateAppControllerInterface;
 use Illuminate\Support\Facades\Route;
+use Package\SomeSpecificApplication\CreateApp\Adaptor\CreateAppControllerInterface;
 
 /*
 |--------------------------------------------------------------------------

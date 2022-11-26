@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Tests\Unit;
 
@@ -11,8 +12,8 @@ class ExampleTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function test_example(): void
     {
-        $this->assertTrue(true);
+        static::assertTrue(true);
     }
 }

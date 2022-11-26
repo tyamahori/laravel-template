@@ -1,13 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace Package\SomeSpecificApplication\CreateApp\Concrete\Adaptor;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Package\SomeSpecificApplication\CreateApp\Adaptor\CreateAppControllerInterface;
 use Package\SomeSpecificApplication\CreateApp\UseCase\CreateAppParameter;
 use Package\SomeSpecificApplication\CreateApp\UseCase\CreateAppUseCase;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class CreateAppController extends Controller implements CreateAppControllerInterface
 {
