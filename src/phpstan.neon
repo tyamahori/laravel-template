@@ -1,0 +1,18 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+        - config
+        - database
+        - package
+        - resources
+        - routes
+        - tests
+    scanFiles:
+      - _ide_helper.php
+      - _ide_helper_models.php
+      - .phpstorm.meta.php
+    level: max
+    editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'

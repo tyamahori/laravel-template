@@ -57,6 +57,7 @@ services:
       - ../../src/composer.lock:/opt/${PROJECT_DOMAIN}/composer.lock
       - ../../src/phpunit.xml:/opt/${PROJECT_DOMAIN}/phpunit.xml
       - ../../src/server.php:/opt/${PROJECT_DOMAIN}/server.php
+      - ../../src/phpstan.neon:/opt/${PROJECT_DOMAIN}/phpstan.neon
       # volumes
       - tyamahori-vendor:/opt/${PROJECT_DOMAIN}/vendor
       - tyamahori-storage:/opt/${PROJECT_DOMAIN}/storage

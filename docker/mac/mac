@@ -222,4 +222,14 @@ case "$1" in
 "test")
   docker exec -i "${APP}" ./vendor/bin/phpunit
   ;;
+
+"phpstan-all")
+    ${RUN_APP} composer ide-helper
+    ${RUN_APP} composer phpstan
+    ;;
+
+"phpstan-on-save")
+    ${RUN_APP} composer ide-helper
+    echo "${@:2}" | sed -e 's/src/./' | xargs -r docker exec "${APP}" composer phpstan
+    ;;
 esac
