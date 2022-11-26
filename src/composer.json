@@ -22,6 +22,7 @@
     "barryvdh/laravel-ide-helper": "^2.10",
     "brianium/paratest": "^6.4",
     "fakerphp/faker": "^1.9.1",
+    "friendsofphp/php-cs-fixer": "^3.13",
     "laravel/sail": "^1.0.1",
     "mockery/mockery": "^1.4.2",
     "nunomaduro/collision": "^6.0",
@@ -63,6 +64,9 @@
     ],
     "phpstan": [
       "./vendor/bin/phpstan analyse --configuration=phpstan.neon"
+    ],
+    "php-cs-fixer": [
+      "./vendor/bin/php-cs-fixer fix"
     ]
   },
   "extra": {

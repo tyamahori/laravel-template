@@ -58,6 +58,8 @@ services:
       - ../../src/phpunit.xml:/opt/${PROJECT_DOMAIN}/phpunit.xml
       - ../../src/server.php:/opt/${PROJECT_DOMAIN}/server.php
       - ../../src/phpstan.neon:/opt/${PROJECT_DOMAIN}/phpstan.neon
+      - ../../src/.php-cs-fixer.dist.php:/opt/${PROJECT_DOMAIN}/.php-cs-fixer.dist.php
+
       # volumes
       - tyamahori-vendor:/opt/${PROJECT_DOMAIN}/vendor
       - tyamahori-storage:/opt/${PROJECT_DOMAIN}/storage
