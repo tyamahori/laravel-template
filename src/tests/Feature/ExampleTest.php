@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+# declare(strict_types=1);
 
 namespace Tests\Feature;
 
@@ -29,5 +30,10 @@ class ExampleTest extends TestCase
                     ],
                 ],
             ]);
+    }
+
+    public function hoge(): void
+    {
+        echo 40;
     }
 }

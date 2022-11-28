@@ -39,33 +39,35 @@ services:
       dockerfile: ./docker/mac/php/Dockerfile
       args:
         - PROJECT_DOMAIN=${PROJECT_DOMAIN}
+        - XDEBUG=true
     container_name: ${COMPOSE_PROJECT_NAME}-${APP_SUFFIX}
     volumes:
       # directories
-      - ../../src/app:/opt/${PROJECT_DOMAIN}/app
-      - ../../src/bootstrap:/opt/${PROJECT_DOMAIN}/bootstrap
-      - ../../src/config:/opt/${PROJECT_DOMAIN}/config
-      - ../../src/database:/opt/${PROJECT_DOMAIN}/database
-      - ../../src/package:/opt/${PROJECT_DOMAIN}/package
-      - ../../src/resources:/opt/${PROJECT_DOMAIN}/resources
-      - ../../src/routes:/opt/${PROJECT_DOMAIN}/routes
-      - ../../src/tests:/opt/${PROJECT_DOMAIN}/tests
+      - ../../src/app:/opt/tyamahori.love/app
+      - ../../src/bootstrap:/opt/tyamahori.love/bootstrap
+      - ../../src/config:/opt/tyamahori.love/config
+      - ../../src/database:/opt/tyamahori.love/database
+      - ../../src/public:/opt/tyamahori.love/public
+      - ../../src/package:/opt/tyamahori.love/package
+      - ../../src/resources:/opt/tyamahori.love/resources
+      - ../../src/routes:/opt/tyamahori.love/routes
+      - ../../src/tests:/opt/tyamahori.love/tests
+      - ../../src/tests:/opt/tyamahori.love/storage
       # files
-      - ../../src/.styleci.yml:/opt/${PROJECT_DOMAIN}/.styleci.yml
-      - ../../src/artisan:/opt/${PROJECT_DOMAIN}/artisan
-      - ../../src/composer.json:/opt/${PROJECT_DOMAIN}/composer.json
-      - ../../src/composer.lock:/opt/${PROJECT_DOMAIN}/composer.lock
-      - ../../src/phpunit.xml:/opt/${PROJECT_DOMAIN}/phpunit.xml
-      - ../../src/server.php:/opt/${PROJECT_DOMAIN}/server.php
-      - ../../src/phpstan.neon:/opt/${PROJECT_DOMAIN}/phpstan.neon
-      - ../../src/.php-cs-fixer.dist.php:/opt/${PROJECT_DOMAIN}/.php-cs-fixer.dist.php
+      - ../../src/.styleci.yml:/opt/tyamahori.love/.styleci.yml
+      - ../../src/artisan:/opt/tyamahori.love/artisan
+      - ../../src/composer.json:/opt/tyamahori.love/composer.json
+      - ../../src/composer.lock:/opt/tyamahori.love/composer.lock
+      - ../../src/phpunit.xml:/opt/tyamahori.love/phpunit.xml
+      - ../../src/server.php:/opt/tyamahori.love/server.php
+      - ../../src/phpstan.neon:/opt/tyamahori.love/phpstan.neon
+      - ../../src/.php-cs-fixer.dist.php:/opt/tyamahori.love/.php-cs-fixer.dist.php
 
       # volumes
-      - tyamahori-vendor:/opt/${PROJECT_DOMAIN}/vendor
-      - tyamahori-storage:/opt/${PROJECT_DOMAIN}/storage
+      - tyamahori-vendor:/opt/tyamahori.love/vendor
+      - tyamahori-storage:/opt/tyamahori.love/storage
       - tyamahori-socket:/var/run/php-fpm
-      - tyamahori-public:/opt/${PROJECT_DOMAIN}/public
-    working_dir: /opt/${PROJECT_DOMAIN}
+    working_dir: /opt/tyamahori.love
     env_file:
       - .env
     depends_on:
