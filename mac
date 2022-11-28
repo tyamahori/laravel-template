@@ -1,10 +1,15 @@
 #!/bin/bash
 
+# 便利スクリプトのファイルはプロジェクト直下に置く
+# PhpStormのFile Watcherによるファイル反映がリアルタイムになるため便利になる。
+
+cd docker/mac || exit
+
 # .env ファイルを .env.localからコピーして生成する
 if [ ! -e '.env' ]; then
-    echo envファイルを生成します。
+    echo 'envファイルを生成します。'
     cp .env.local .env
-    echo envファイルが生成されました。
+    echo 'envファイルが生成されました。'
 fi
 
 # localのループバックIPを一つ設定する
@@ -12,7 +17,7 @@ LOCAL_IP=$(grep LOCAL_IP .env | cut -d '=' -f2)
 
 # macにて必要に応じて sudo ifconfig lo0 alias を叩く
 if [[ "$OSTYPE" == "darwin"* ]] && ! ifconfig | grep -i "$LOCAL_IP" > /dev/null; then
-    echo "$LOCAL_IP" が無効なのでエイリアスを生成します。パスワードを入力してください。
+    echo "${LOCAL_IP}が無効なのでエイリアスを生成します。パスワードを入力してください。"
     sudo ifconfig lo0 alias "$LOCAL_IP" up
 fi
 
@@ -30,18 +35,15 @@ COMPOSE_PROJECT_NAME=$(grep COMPOSE_PROJECT_NAME .env | cut -d '=' -f2 | head -1
 WEB_SUFFIX=$(grep WEB_SUFFIX .env | cut -d '=' -f2 | head -1)
 APP_SUFFIX=$(grep APP_SUFFIX .env | cut -d '=' -f2 | head -1)
 DB_SUFFIX=$(grep DB_SUFFIX .env | cut -d '=' -f2 | head -1)
-SCHEMA_SUFFIX=$(grep SCHEMA_SUFFIX .env | cut -d '=' -f2 | head -1)
 
 
 # コンテナ名定義
 WEB="${COMPOSE_PROJECT_NAME}-${WEB_SUFFIX}"
 APP="${COMPOSE_PROJECT_NAME}-${APP_SUFFIX}"
 DB="${COMPOSE_PROJECT_NAME}-${DB_SUFFIX}"
-SCHEMA="${COMPOSE_PROJECT_NAME}-${SCHEMA_SUFFIX}"
 
 # コマンド定義
 RUN_APP="docker exec -it ${APP}"
-RUN_SCHEMA="docker exec -it ${SCHEMA}"
 
 # コンテナ内のパス定義
 REMOTE_APP_DIR="/opt/${PROJECT_DOMAIN}"
@@ -162,7 +164,7 @@ case "$1" in
   ;;
 
 "app")
-  docker exec -it "${APP}" sh
+  docker exec -it "${APP}" bash
   ;;
 
 "schema")
