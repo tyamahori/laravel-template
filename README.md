@@ -21,25 +21,27 @@ Made By [tyamahori](https://twitter.com/tyamahori)
 
 # 起動方法
 
+## 初回起動
+
 ```shell
-$ cd docker/mac && ./mac create
+$ ./mac create
 ```
 
 # アプリケーション情報
 
-| 項目名     | バージョン  |
-| ---------- |--------|
-| PHP        | 8.1.7  |
-| Laravel    | 9.17.0 |
+| 項目名        | バージョン  |
+|------------|--------|
+| PHP        | 8.1.12 |
+| Laravel    | 9.41.0 |
 | PostgreSQL | 13.4   |
 | Redis      | 6.0    |
 
 # 開発ツール情報
 
-| 項目名    | 備考 |
-| ----      | ---- |
-| Mailhog   | メールの確認ができます |
-| Minio     | s3のローカルモックツールです |
+| 項目名       | 備考                    |
+|-----------|-----------------------|
+| Mailhog   | メールの確認ができます           |
+| Minio     | s3のローカルモックツールです       |
 | SchemaSpy | DBのあれこれを便利に確認できるツールです |
 
 # DBアクセス情報
@@ -52,8 +54,8 @@ $ cd docker/mac && ./mac create
 
 GUIツールなどでのアクセス設定で必要となります。
 
-| 項目名   | 情報      |
-| ----     | ----      |
+| 項目名      | 情報        |
+|----------|-----------|
 | PORT     | 5432      |
 | DATABASE | tyamahori |
 | USERNAME | tyamahori |
@@ -62,10 +64,10 @@ GUIツールなどでのアクセス設定で必要となります。
 
 # 開発URL
 
-| 項目名            | URL                                                            |
-|----------------|----------------------------------------------------------------|
-| Laravel        | https://tyamahori.love/                                        |
-| SchemaSpy      | https://schema.tyamahori.love/                                 |
-| Mailhog        | https://mail.tyamahori.love/                                   |
+| 項目名            | URL                                                                  |
+|----------------|----------------------------------------------------------------------|
+| Laravel        | https://tyamahori.love/                                              |
+| SchemaSpy      | https://schema.tyamahori.love/                                       |
+| Mailhog        | https://mail.tyamahori.love/                                         |
 | Minio          | https://minio.tyamahori.love/ <br> ID: `tyamahori` Pass: `tyamahori` |
-| Uploaded Files | https://file.tyamahori.love/tyamahori/*****                    |
+| Uploaded Files | https://file.tyamahori.love/tyamahori/*****                          |
