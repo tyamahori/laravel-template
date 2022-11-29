@@ -5,7 +5,7 @@ services:
     ports:
       - "${LOCAL_IP}:443:443"
       - "${LOCAL_IP}:80:80"
-    image: nginx:1.17.9-alpine
+    image: nginx:1.23.2-alpine
     container_name: ${COMPOSE_PROJECT_NAME}-${WEB_SUFFIX}
     working_dir: /opt/${PROJECT_DOMAIN}
     environment:
