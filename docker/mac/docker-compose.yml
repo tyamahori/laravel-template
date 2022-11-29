@@ -41,6 +41,8 @@ services:
         - PROJECT_DOMAIN=${PROJECT_DOMAIN}
         - XDEBUG=true
     container_name: ${COMPOSE_PROJECT_NAME}-${APP_SUFFIX}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       # directories
       - ../../src/app:/opt/tyamahori.love/app
