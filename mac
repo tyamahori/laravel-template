@@ -232,12 +232,12 @@ case "$1" in
 
 "phpstan-on-save")
     # PHPStormのFile Watchers機能を見越したコマンド
-    ${RUN_APP} composer ide-helper
-    echo "${@:2}" | sed -e 's/src/./' | xargs -r docker exec "${APP}" composer phpstan
+    docker exec -t "${APP}" composer ide-helper
+    echo "${@:2}" | sed -e 's/src/./' | xargs -r docker exec -t "${APP}" composer phpstan
     ;;
 
 "php-cs-fixer")
     # PHPStormのFile Watchers機能を見越したコマンド
-    echo "${@:2}" | sed -e 's/src/./' | xargs -r docker exec "${APP}" composer php-cs-fixer
+    echo "${@:2}" | sed -e 's/src/./' | xargs -r docker exec -t "${APP}" composer php-cs-fixer
     ;;
 esac
