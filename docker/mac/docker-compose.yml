@@ -123,6 +123,7 @@ services:
 
   mail:
     image: mailhog/mailhog
+    platform: linux/x86_64
     container_name: ${COMPOSE_PROJECT_NAME}-${MAIL_SUFFIX}
 
   bucket:
