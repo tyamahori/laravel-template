@@ -89,11 +89,10 @@ case "$1" in
   ${RUN_APP} ./artisan ide-helper:models --nowrite
   ${RUN_APP} ./artisan ide-helper:meta
 
-  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
-  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
-  docker cp "${APP}":"${REMOTE_APP_DIR}"/.phpstorm.meta.php ${LOCAL_APP_DIR}
-
-  docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_APP_DIR}"/.phpstorm.meta.php ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
   # docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
 
   docker compose images
@@ -127,11 +126,11 @@ case "$1" in
   ${RUN_APP} ./artisan ide-helper:generate
   ${RUN_APP} ./artisan ide-helper:models --nowrite
 
-  docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
   # docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
 
-  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
-  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
 
   docker container prune -f
   docker image prune -f
@@ -176,9 +175,9 @@ case "$1" in
   ${RUN_APP} ./artisan ide-helper:models --nowrite
   ${RUN_APP} ./artisan ide-helper:meta
 
-  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
-  docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
-  docker cp "${APP}":"${REMOTE_APP_DIR}"/.phpstorm.meta.php ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_APP_DIR}"/.phpstorm.meta.php ${LOCAL_APP_DIR}
   ;;
 
 "db:refresh")
@@ -200,7 +199,7 @@ case "$1" in
 "composer")
   rm -rf ${LOCAL_VENDOR_DIR}
   ${RUN_APP} composer "${@:2}"
-  docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
+  # docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
   ;;
 
 "artisan")

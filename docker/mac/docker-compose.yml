@@ -18,14 +18,24 @@ services:
       > /etc/nginx/conf.d/default.conf
       && nginx -g 'daemon off;'"
     volumes:
-      # file
-      - ./nginx/default.conf.template:/etc/nginx/conf.d/default.conf.template
-      - ./nginx/ssl/cert.pem:/etc/ssl/certs/cert.pem
-      - ./nginx/ssl/key.pem:/etc/ssl/certs/key.pem
-      # volume
-      - tyamahori-socket:/var/run/php-fpm
-      - tyamahori-schemaspy:/opt/schema
-      - tyamahori-public:/opt/${PROJECT_DOMAIN}/public
+      - type: bind
+        source: "./nginx/default.conf.template"
+        target: "/etc/nginx/conf.d/default.conf.template"
+      - type: bind
+        source: "./nginx/ssl/cert.pem"
+        target: "/etc/ssl/certs/cert.pem"
+      - type: bind
+        source: "./nginx/ssl/key.pem"
+        target: "/etc/ssl/certs/key.pem"
+      - type: bind
+        source: "../../src/public"
+        target: "/opt/tyamahori.love/public"
+      - type: volume
+        source: tyamahori-socket
+        target: /var/run/php-fpm
+      - type: volume
+        source: tyamahori-schemaspy
+        target: /opt/schema
     depends_on:
       - app
     networks:
@@ -44,31 +54,12 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      # directories
-      - ../../src/app:/opt/tyamahori.love/app
-      - ../../src/bootstrap:/opt/tyamahori.love/bootstrap
-      - ../../src/config:/opt/tyamahori.love/config
-      - ../../src/database:/opt/tyamahori.love/database
-      - ../../src/public:/opt/tyamahori.love/public
-      - ../../src/package:/opt/tyamahori.love/package
-      - ../../src/resources:/opt/tyamahori.love/resources
-      - ../../src/routes:/opt/tyamahori.love/routes
-      - ../../src/tests:/opt/tyamahori.love/tests
-      - ../../src/tests:/opt/tyamahori.love/storage
-      # files
-      - ../../src/.styleci.yml:/opt/tyamahori.love/.styleci.yml
-      - ../../src/artisan:/opt/tyamahori.love/artisan
-      - ../../src/composer.json:/opt/tyamahori.love/composer.json
-      - ../../src/composer.lock:/opt/tyamahori.love/composer.lock
-      - ../../src/phpunit.xml:/opt/tyamahori.love/phpunit.xml
-      - ../../src/server.php:/opt/tyamahori.love/server.php
-      - ../../src/phpstan.neon:/opt/tyamahori.love/phpstan.neon
-      - ../../src/.php-cs-fixer.dist.php:/opt/tyamahori.love/.php-cs-fixer.dist.php
-
-      # volumes
-      - tyamahori-vendor:/opt/tyamahori.love/vendor
-      - tyamahori-storage:/opt/tyamahori.love/storage
-      - tyamahori-socket:/var/run/php-fpm
+      - type: bind
+        source: "../../src"
+        target: "/opt/tyamahori.love"
+      - type: volume
+        source: tyamahori-socket
+        target: /var/run/php-fpm
     working_dir: /opt/tyamahori.love
     env_file:
       - .env
@@ -83,7 +74,9 @@ services:
     image: schemaspy/schemaspy:snapshot
     working_dir: /app
     volumes:
-      - tyamahori-schemaspy:/output
+      - type: volume
+        source: tyamahori-schemaspy
+        target: /output
     depends_on:
       - db
     command:
@@ -101,10 +94,12 @@ services:
     image: postgres:15.1-alpine
     container_name: ${COMPOSE_PROJECT_NAME}-${DB_SUFFIX}
     volumes:
-      # file
-      - ./postgre/sql/setup.sql:/docker-entrypoint-initdb.d/setup.sql
-      # volumes
-      - tyamahori-db:/var/lib/postgresql/data
+      - type: bind
+        source: "./postgre/sql/setup.sql"
+        target: "/docker-entrypoint-initdb.d/setup.sql"
+      - type: volume
+        source: tyamahori-db
+        target: /var/lib/postgresql/data
     ports:
       - "${LOCAL_IP}:5432:5432"
     env_file:
@@ -114,7 +109,9 @@ services:
     image: redis:6.0-alpine
     container_name: ${COMPOSE_PROJECT_NAME}-${REDIS_SUFFIX}
     volumes:
-      - tyamahori-redis:/data
+      - type: volume
+        source: tyamahori-redis
+        target: /data
     command: redis-server --appendonly yes
     env_file:
       - .env
@@ -148,8 +145,12 @@ services:
       - .env
     command: server /export --console-address ":9001"
     volumes:
-      - tyamahori-s3:/export
-      - tyamahori-s3-config:/root/.minio
+      - type: volume
+        source: tyamahori-s3
+        target: /export
+      - type: volume
+        source: tyamahori-s3-config
+        target: /root/.minio
 
 networks:
   default:
@@ -157,10 +158,6 @@ networks:
     name: ${NETWORK_NAME}
 
 volumes:
-  tyamahori-vendor:
-    name: ${COMPOSE_PROJECT_NAME}-vendor
-  tyamahori-storage:
-    name: ${COMPOSE_PROJECT_NAME}-storage
   tyamahori-redis:
     name: ${COMPOSE_PROJECT_NAME}-redis
   tyamahori-db:
@@ -171,8 +168,6 @@ volumes:
     name: ${COMPOSE_PROJECT_NAME}-schemaspy
   tyamahori-node:
     name: ${COMPOSE_PROJECT_NAME}-node
-  tyamahori-public:
-    name: ${COMPOSE_PROJECT_NAME}-public
   tyamahori-s3:
     name: ${COMPOSE_PROJECT_NAME}-s3
   tyamahori-s3-config:
