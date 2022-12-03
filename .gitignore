@@ -3,6 +3,7 @@ src/public/hot
 src/public/storage
 src/storage/*.key
 src/vendor
+src/.php-cs-fixer.cache
 docker/mac/nginx/ssl
 .env
 .env.backup
