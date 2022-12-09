@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   web:
     ports:
@@ -51,6 +49,8 @@ services:
         - PROJECT_DOMAIN=${PROJECT_DOMAIN}
         - XDEBUG=true
     container_name: ${COMPOSE_PROJECT_NAME}-${APP_SUFFIX}
+    environment:
+      PHP_CS_FIXER_IGNORE_ENV: 1
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:

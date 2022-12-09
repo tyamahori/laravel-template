@@ -17,7 +17,7 @@ RUN /bin/sh -c 'set -ex && ARCH=`uname -m` && \
             && rm psqldef_linux_386.tar.gz; \
         fi'
 
-FROM public.ecr.aws/docker/library/php:8.1.12-fpm-buster
+FROM public.ecr.aws/docker/library/php:8.2.0-fpm-buster
 
 ENV COMPOSER_HOME=/root/composer \
     PATH=$COMPOSER_HOME/vendor/bin:$PATH \
