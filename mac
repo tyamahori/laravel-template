@@ -113,8 +113,8 @@ case "$1" in
 # ボリュームを削除して再度やり直す
   docker compose down --volumes --remove-orphans
 
-  rm -rf ${LOCAL_VENDOR_DIR}
-  rm -rf ${LOCAL_NODE_DIR}
+  # rm -rf ${LOCAL_VENDOR_DIR}
+  # rm -rf ${LOCAL_NODE_DIR}
 
   docker compose up -d
 
