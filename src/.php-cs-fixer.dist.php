@@ -10,7 +10,7 @@ return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules(
         [
-            '@PHP81Migration' => true,
+            '@PHP82Migration' => true,
             '@PHP80Migration:risky' => true,
             '@PhpCsFixer:risky' => true,
             '@PSR2' => true,

@@ -63,7 +63,7 @@
       "@php artisan ide-helper:meta"
     ],
     "phpstan": [
-      "./vendor/bin/phpstan analyse --configuration=phpstan.neon"
+      "./vendor/bin/phpstan analyse --xdebug --configuration=phpstan.neon"
     ],
     "php-cs-fixer": [
       "./vendor/bin/php-cs-fixer fix"
