@@ -31,9 +31,9 @@ $ ./mac create
 
 | 項目名        | バージョン  |
 |------------|--------|
-| PHP        | 8.1.12 |
-| Laravel    | 9.41.0 |
-| PostgreSQL | 13.4   |
+| PHP        | 8.2.0  |
+| Laravel    | 9.43.0 |
+| PostgreSQL | 15.1   |
 | Redis      | 6.0    |
 
 # 開発ツール情報
