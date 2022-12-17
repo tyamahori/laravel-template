@@ -129,7 +129,16 @@ return (new PhpCsFixer\Config())
 
             'no_trailing_comma_in_singleline' => true,
 
-            'ordered_imports' => true,
+            'ordered_imports' => [
+                'sort_algorithm' => 'alpha',
+                'imports_order' => [
+                    'const',
+                    'class',
+                    'function',
+                ],
+            ],
+
+            'blank_line_between_import_groups' => true,
 
             'ordered_traits' => true,
 
@@ -137,10 +146,18 @@ return (new PhpCsFixer\Config())
 
             'visibility_required' => true,
 
+            'list_syntax' => [
+                'syntax' => 'short',
+            ],
+
+            'single_quote' => true,
+
             'function_declaration' => [
                 'closure_function_spacing' => 'none',
                 'closure_fn_spacing' => 'none',
             ],
+
+            'static_lambda' => true,
         ]
     )
     ->setFinder($finder);
