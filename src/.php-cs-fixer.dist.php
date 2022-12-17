@@ -158,6 +158,8 @@ return (new PhpCsFixer\Config())
             ],
 
             'static_lambda' => true,
+
+            'simple_to_complex_string_variable' => true,
         ]
     )
     ->setFinder($finder);
