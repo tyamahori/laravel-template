@@ -69,7 +69,7 @@ services:
       mysql:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
       mail:
         condition: service_started
       s3:
@@ -143,6 +143,11 @@ services:
       - .env
     ports:
       - "${LOCAL_IP}:6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 30s
+      retries: 30
 
   mail:
     image: mailhog/mailhog
