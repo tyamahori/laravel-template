@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Package\SomeSpecificApplication\CreateApp\UseCase;
 
 use InvalidArgumentException;
+
 use function is_int;
 
 class CreateAppParameter

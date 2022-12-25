@@ -7,6 +7,8 @@ use Illuminate\Config\Repository;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Application;
 
+use function is_array;
+
 class SqlDefExecute extends Command
 {
     /**
@@ -62,5 +64,7 @@ class SqlDefExecute extends Command
         $this->info("Executing command: $commandToDisplay");
         shell_exec($commandToExecute);
         $this->info('Command executed.');
+
+        is_array([]);
     }
 }
