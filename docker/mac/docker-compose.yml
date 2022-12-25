@@ -64,10 +64,16 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
-      - redis
-      - mail
-      - s3
+      db:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      mail:
+        condition: service_started
+      s3:
+        condition: service_started
 
   schemaspy:
     container_name: ${COMPOSE_PROJECT_NAME}-${SCHEMA_SUFFIX}
@@ -77,8 +83,6 @@ services:
       - type: volume
         source: tyamahori-schemaspy
         target: /output
-    depends_on:
-      - db
     command:
       -t pgsql
       -u "${DB_USERNAME}"
@@ -104,6 +108,28 @@ services:
       - "${LOCAL_IP}:5432:5432"
     env_file:
       - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mysql:
+    image: mysql:8.0.31
+    container_name: ${COMPOSE_PROJECT_NAME}-${DB_SUFFIX}-mysql
+    volumes:
+      - type: bind
+        source: "./postgre/sql/setup.sql"
+        target: "/docker-entrypoint-initdb.d/setup.sql"
+    ports:
+      - "${LOCAL_IP}:3306:3306"
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost  --silent" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:6.0-alpine
@@ -126,8 +152,6 @@ services:
   bucket:
     image: minio/mc
     container_name: ${COMPOSE_PROJECT_NAME}-${BUCKET_SUFFIX}
-    depends_on:
-      - s3
     entrypoint: >
       /bin/sh -c "
       until (mc config host add myminio http://${COMPOSE_PROJECT_NAME}-${S3_SUFFIX}:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}) do echo '...waiting...' && sleep 1; done;

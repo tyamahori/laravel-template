@@ -1,10 +1,5 @@
 FROM public.ecr.aws/docker/library/composer:2.4.4 as build
 
-ENV DOCKERIZE_VERSION=v0.6.1
-RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
- && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
- && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-
 ENV SQLDEF_VERSION=v0.15.0
 RUN /bin/sh -c 'set -ex && ARCH=`uname -m` && \
         if [ "$ARCH" == "aarch64" ]; then \
@@ -25,7 +20,6 @@ ENV COMPOSER_HOME=/root/composer \
     DEBCONF_NOWARNINGS=yes
 
 COPY --from=build /usr/bin/composer /usr/bin/composer
-COPY --from=build /usr/local/bin/dockerize /usr/bin/dockerize
 
 COPY --from=node:18 /usr/local/bin/ /usr/local/bin/
 COPY --from=node:18 /usr/local/lib/node_modules /usr/local/lib/node_modules

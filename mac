@@ -77,8 +77,6 @@ case "$1" in
   docker network create "${PROJECT_NETWORK}"
   docker compose up -d --build
 
-  ${RUN_APP} dockerize -timeout 60s -wait tcp://"${DB}":5432
-
   ${RUN_APP} composer install
   ${RUN_APP} composer dump-autoload
   docker compose run --rm bucket
@@ -188,7 +186,6 @@ case "$1" in
   # docker volume rm "${COMPOSE_PROJECT_NAME}-redis" 画像登録時を想定する場合はコメントアウトする
 
   docker compose up -d
-  ${RUN_APP} dockerize -timeout 60s -wait tcp://"${DB}":5432
   ${RUN_APP} ./artisan migrate
   ${RUN_APP} ./artisan migrate:refresh
   ${RUN_APP} ./artisan db:seed
@@ -218,6 +215,10 @@ case "$1" in
 
 "logs")
   docker compose logs -f
+  ;;
+
+"ps")
+  docker compose ps
   ;;
 
 "test")
