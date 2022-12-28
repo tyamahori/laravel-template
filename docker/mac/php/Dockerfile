@@ -1,16 +1,13 @@
-FROM public.ecr.aws/docker/library/composer:2.4.4 as build
+FROM golang:latest as build
 
-ENV SQLDEF_VERSION=v0.15.0
-RUN /bin/sh -c 'set -ex && ARCH=`uname -m` && \
-        if [ "$ARCH" == "aarch64" ]; then \
-           echo "$ARCH" && wget https://github.com/k0kubun/sqldef/releases/download/$SQLDEF_VERSION/psqldef_linux_arm64.tar.gz \
-            && tar -C /usr/local/bin -xzvf psqldef_linux_arm64.tar.gz \
-            && rm psqldef_linux_arm64.tar.gz; \
-        else \
-           echo "$ARCH" && wget https://github.com/k0kubun/sqldef/releases/download/$SQLDEF_VERSION/psqldef_linux_386.tar.gz \
-            && tar -C /usr/local/bin -xzvf psqldef_linux_386.tar.gz \
-            && rm psqldef_linux_386.tar.gz; \
-        fi'
+ARG RUNN_VERSION
+ARG SQLDEF_VERSION
+
+ENV ROOT=/go/src/app
+
+RUN go install github.com/k1LoW/runn/cmd/runn@${RUNN_VERSION}
+RUN go install github.com/k0kubun/sqldef/cmd/psqldef@${SQLDEF_VERSION}
+RUN go install github.com/k0kubun/sqldef/cmd/mysqldef@${SQLDEF_VERSION}
 
 FROM public.ecr.aws/docker/library/php:8.2.0-fpm-buster
 
@@ -18,18 +15,6 @@ ENV COMPOSER_HOME=/root/composer \
     PATH=$COMPOSER_HOME/vendor/bin:$PATH \
     COMPOSER_ALLOW_SUPERUSER=1 \
     DEBCONF_NOWARNINGS=yes
-
-COPY --from=build /usr/bin/composer /usr/bin/composer
-
-COPY --from=node:18 /usr/local/bin/ /usr/local/bin/
-COPY --from=node:18 /usr/local/lib/node_modules /usr/local/lib/node_modules
-
-COPY --from=build /usr/local/bin/psqldef /usr/bin/psqldef
-
-# php.ini
-COPY ./docker/mac/php/php.ini /usr/local/etc/php/php.ini
-# php.conf
-COPY ./docker/mac/php/zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 
 # package install and setup
 RUN apt-get update \
@@ -52,4 +37,16 @@ RUN if [ "$XDEBUG" = true ]; then \
 
 # project
 ARG PROJECT_DOMAIN
+
+# php.ini
+COPY ./docker/mac/php/php.ini /usr/local/etc/php/php.ini
+# php.conf
+COPY ./docker/mac/php/zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
+
 COPY --chown=www-data:www-data ./src/storage /opt/$PROJECT_DOMAIN/storage
+COPY --from=public.ecr.aws/docker/library/composer:2.5.1 /usr/bin/composer /usr/bin/composer
+COPY --from=build /go/bin/runn /usr/bin/runn
+COPY --from=build /go/bin/mysqldef /usr/bin/mysqldef
+COPY --from=build /go/bin/psqldef /usr/bin/psqldef
+COPY --from=node:18 /usr/local/bin/ /usr/local/bin/
+COPY --from=node:18 /usr/local/lib/node_modules /usr/local/lib/node_modules

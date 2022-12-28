@@ -48,6 +48,8 @@ services:
       args:
         - PROJECT_DOMAIN=${PROJECT_DOMAIN}
         - XDEBUG=true
+        - RUNN_VERSION=${RUNN_VERSION}
+        - SQLDEF_VERSION=${SQLDEF_VERSION}
     container_name: ${COMPOSE_PROJECT_NAME}-${APP_SUFFIX}
     environment:
       PHP_CS_FIXER_IGNORE_ENV: 1
