@@ -45,8 +45,8 @@ COPY ./docker/mac/php/zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 
 COPY --chown=www-data:www-data ./src/storage /opt/$PROJECT_DOMAIN/storage
 COPY --from=public.ecr.aws/docker/library/composer:2.5.1 /usr/bin/composer /usr/bin/composer
-COPY --from=build /go/bin/runn /usr/bin/runn
-COPY --from=build /go/bin/mysqldef /usr/bin/mysqldef
-COPY --from=build /go/bin/psqldef /usr/bin/psqldef
 COPY --from=node:18 /usr/local/bin/ /usr/local/bin/
 COPY --from=node:18 /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --from=build /go/bin/mysqldef /usr/bin/mysqldef
+COPY --from=build /go/bin/psqldef /usr/bin/psqldef
+COPY --from=build /go/bin/runn /usr/bin/runn
