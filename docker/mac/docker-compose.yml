@@ -111,7 +111,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
+      test: ["CMD", "pg_isready", "-U", "${DB_USERNAME}", "-d", "${DB_DATABASE}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -128,7 +128,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: [ "CMD-SHELL", "mysqladmin ping -h localhost  --silent" ]
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "${DB_USERNAME}", "-p${DB_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -161,13 +161,11 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-${BUCKET_SUFFIX}
     entrypoint: >
       /bin/sh -c "
-      until (mc config host add myminio http://${COMPOSE_PROJECT_NAME}-${S3_SUFFIX}:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}) do echo '...waiting...' && sleep 1; done;
+      until (mc config host add myminio http://s3:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}) do echo '...waiting...' && sleep 1; done;
       mc mb myminio/${AWS_BUCKET};
       mc policy set public myminio/${AWS_BUCKET};
       exit 0;
       "
-    profiles:
-      - bucket
 
   s3:
     image: minio/minio:latest
