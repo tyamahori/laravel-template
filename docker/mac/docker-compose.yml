@@ -34,12 +34,34 @@ services:
       - type: volume
         source: tyamahori-schemaspy
         target: /opt/schema
+#      - type: bind
+#        source: "./nginx/ssl/cert.pem"
+#        target: "/etc/ssl/certs/cert.pem"
+#      - type: bind
+#        source: "./nginx/ssl/key.pem"
+#        target: "/etc/ssl/certs/key.pem"
+#      - type: volume
+#        source: tyamahori-mkcert
+#        target: /etc/ssl/certs
     depends_on:
       - app
     networks:
       default:
         aliases:
           - ${PROJECT_DOMAIN}
+
+#  mkcert:
+#    build: ./mkcert
+#    container_name: ${COMPOSE_PROJECT_NAME}-mkcert
+#    working_dir: /var/lib/cert
+#    volumes:
+#      - type: volume
+#        source: tyamahori-mkcert
+#        target: /var/lib/cert
+#    command: >
+#      sh -c "mkcert -install
+#      && mkcert -key-file key.pem -cert-file cert.pem "${PROJECT_DOMAIN}" "*.${PROJECT_DOMAIN}"
+#      && tail -f /dev/null"
 
   app:
     build:
@@ -160,11 +182,11 @@ services:
     image: minio/mc
     container_name: ${COMPOSE_PROJECT_NAME}-${BUCKET_SUFFIX}
     entrypoint: >
-      /bin/sh -c "
+      sh -c "
       until (mc config host add myminio http://s3:9000 ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}) do echo '...waiting...' && sleep 1; done;
       mc mb myminio/${AWS_BUCKET};
       mc policy set public myminio/${AWS_BUCKET};
-      exit 0;
+      tail -f /dev/null;
       "
 
   s3:
@@ -201,3 +223,5 @@ volumes:
     name: ${COMPOSE_PROJECT_NAME}-s3
   tyamahori-s3-config:
     name: ${COMPOSE_PROJECT_NAME}-s3-config
+#  tyamahori-mkcert:
+#    name: ${COMPOSE_PROJECT_NAME}-s3-mkcert
