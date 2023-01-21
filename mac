@@ -79,7 +79,6 @@ case "$1" in
 
   ${RUN_APP} composer install
   ${RUN_APP} composer dump-autoload
-  docker compose run --rm bucket
 
   ${RUN_APP} ./artisan migrate:refresh --seed
 
