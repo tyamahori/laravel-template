@@ -18,7 +18,7 @@ ENV COMPOSER_HOME=/root/composer \
 
 # package install and setup
 RUN apt-get update \
- && apt-get -y install git unzip less libzip-dev libicu-dev libonig-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libpq-dev \
+ && apt-get -y install iputils-ping net-tools git unzip less libzip-dev libicu-dev libonig-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libpq-dev \
  && pecl install redis \
  && docker-php-ext-configure gd --with-freetype --with-jpeg \
  && docker-php-ext-configure opcache --enable-opcache \
@@ -40,6 +40,8 @@ ARG PROJECT_DOMAIN
 
 # php.ini
 COPY ./docker/mac/php/php.ini /usr/local/etc/php/php.ini
+COPY ./docker/mac/php/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
 # php.conf
 COPY ./docker/mac/php/zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 

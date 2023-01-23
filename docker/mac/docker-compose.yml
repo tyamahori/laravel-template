@@ -34,12 +34,6 @@ services:
       - type: volume
         source: tyamahori-schemaspy
         target: /opt/schema
-#      - type: bind
-#        source: "./nginx/ssl/cert.pem"
-#        target: "/etc/ssl/certs/cert.pem"
-#      - type: bind
-#        source: "./nginx/ssl/key.pem"
-#        target: "/etc/ssl/certs/key.pem"
 #      - type: volume
 #        source: tyamahori-mkcert
 #        target: /etc/ssl/certs
@@ -75,8 +69,9 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-${APP_SUFFIX}
     environment:
       PHP_CS_FIXER_IGNORE_ENV: 1
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+#
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
     volumes:
       - type: bind
         source: "../../src"
