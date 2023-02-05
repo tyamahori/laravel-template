@@ -45,7 +45,7 @@ COPY ./docker/mac/php/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d/docker
 # php.conf
 COPY ./docker/mac/php/zzz-www.conf /usr/local/etc/php-fpm.d/zzz-www.conf
 
-COPY --chown=www-data:www-data ./src/storage /opt/$PROJECT_DOMAIN/storage
+COPY --chmod=0700 --chown=www-data:www-data ./src/storage /opt/$PROJECT_DOMAIN/storage
 COPY --from=public.ecr.aws/docker/library/composer:2.5.1 /usr/bin/composer /usr/bin/composer
 COPY --from=node:18 /usr/local/bin/ /usr/local/bin/
 COPY --from=node:18 /usr/local/lib/node_modules /usr/local/lib/node_modules
