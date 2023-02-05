@@ -193,9 +193,9 @@ case "$1" in
   ;;
 
 "composer")
-  # rm -rf ${LOCAL_VENDOR_DIR}
+  rm -rf ${LOCAL_VENDOR_DIR}
   ${RUN_APP} composer "${@:2}"
-  # docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
+  docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
   ;;
 
 "artisan")
