@@ -1,11 +1,8 @@
 services:
   web:
-    ports:
-      - "${LOCAL_IP}:443:443"
-      - "${LOCAL_IP}:80:80"
     image: nginx:1.23.2-alpine
     container_name: ${COMPOSE_PROJECT_NAME}-${WEB_SUFFIX}
-    working_dir: /opt/${PROJECT_DOMAIN}
+    working_dir: /opt/projectWorkSpace
     environment:
       - PROJECT_DOMAIN=${PROJECT_DOMAIN}
     command: >
@@ -20,14 +17,8 @@ services:
         source: "./nginx/default.conf.template"
         target: "/etc/nginx/conf.d/default.conf.template"
       - type: bind
-        source: "./nginx/ssl/cert.pem"
-        target: "/etc/ssl/certs/cert.pem"
-      - type: bind
-        source: "./nginx/ssl/key.pem"
-        target: "/etc/ssl/certs/key.pem"
-      - type: bind
         source: "../../src/public"
-        target: "/opt/tyamahori.love/public"
+        target: "/opt/projectWorkSpace/public"
       - type: volume
         source: tyamahori-socket
         target: /var/run/php-fpm
@@ -35,11 +26,22 @@ services:
         source: tyamahori-schemaspy
         target: /opt/schema
     depends_on:
-      - app
+      ssh:
+        condition: service_started
     networks:
       default:
         aliases:
           - ${PROJECT_DOMAIN}
+          - mail.${PROJECT_DOMAIN}
+          - file.${PROJECT_DOMAIN}
+          - minio.${PROJECT_DOMAIN}
+
+  ssh:
+    container_name: ${COMPOSE_PROJECT_NAME}-ssh
+    build: ./ssh
+    ports:
+      - "127.0.0.1:22:22"
+    tty: true
 
   app:
     build:
@@ -58,11 +60,11 @@ services:
     volumes:
       - type: bind
         source: "../../src"
-        target: "/opt/tyamahori.love"
+        target: "/opt/projectWorkSpace"
       - type: volume
         source: tyamahori-socket
         target: /var/run/php-fpm
-    working_dir: /opt/tyamahori.love
+    working_dir: /opt/projectWorkSpace
     env_file:
       - .env
     depends_on:
@@ -106,8 +108,6 @@ services:
       - type: volume
         source: tyamahori-db
         target: /var/lib/postgresql/data
-    ports:
-      - "${LOCAL_IP}:5432:5432"
     env_file:
       - .env
     healthcheck:
@@ -123,8 +123,6 @@ services:
       - type: bind
         source: "./postgre/sql/setup.sql"
         target: "/docker-entrypoint-initdb.d/setup.sql"
-    ports:
-      - "${LOCAL_IP}:3306:3306"
     env_file:
       - .env
     healthcheck:
@@ -143,8 +141,6 @@ services:
     command: redis-server --appendonly yes
     env_file:
       - .env
-    ports:
-      - "${LOCAL_IP}:6379:6379"
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 1s
@@ -180,11 +176,7 @@ services:
       - type: volume
         source: tyamahori-s3-config
         target: /root/.minio
-
-networks:
-  default:
-    external: true
-    name: ${NETWORK_NAME}
+    hostname: s3.${PROJECT_DOMAIN}
 
 volumes:
   tyamahori-redis:

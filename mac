@@ -239,4 +239,9 @@ case "$1" in
     # PHPStormのFile Watchers機能を見越したコマンド
     echo "${@:2}" | sed -e 's/src/./' | xargs -r docker exec -t "${APP}" composer php-cs-fixer
     ;;
+"ssh")
+    ssh-keygen -R localhost
+    ssh-keygen -R 127.0.0.1
+    ssh -oStrictHostKeyChecking=no -i ./ssh/localDocker -ND 9080 root@localhost
+    # mkcert -key-file ./key.pem -cert-file ./cert.pem tyamahori.com
 esac
