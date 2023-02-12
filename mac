@@ -75,7 +75,8 @@ case "$1" in
   mkcert -install
 
   docker network create "${PROJECT_NETWORK}"
-  docker compose up -d --build
+
+  USERID="$(id -u)" GID="$(id -g)" UNAME="$(whoami)" docker compose up -d --build
 
   ${RUN_APP} composer install
   ${RUN_APP} composer dump-autoload
@@ -99,7 +100,7 @@ case "$1" in
 "rebuild")
 # イメージだけリビルドする
   docker compose down
-  docker compose up -d --build
+  USERID="$(id -u)" GID="$(id -g)" UNAME="$(whoami)" docker compose up -d --build
   docker container prune -f
   docker image prune -f
   docker compose images
@@ -137,18 +138,15 @@ case "$1" in
 
 "up")
 # docker-composeの単純な再起動
-  docker compose down
-  docker compose up -d
-  docker compose ps -a
+  USERID="$(id -u)" GID="$(id -g)" UNAME="$(whoami)" docker compose down
+  USERID="$(id -u)" GID="$(id -g)" UNAME="$(whoami)" docker compose up -d
+  USERID="$(id -u)" GID="$(id -g)" UNAME="$(whoami)" docker compose ps -a
   ;;
 
 "down")
 # docker-compose down
-  docker compose down
-  docker container prune -f
-  docker image prune -f
-  docker compose images
-  docker compose ps -a
+  USERID="$(id -u)" GID="$(id -g)" UNAME="$(whoami)" docker compose down
+  USERID="$(id -u)" GID="$(id -g)" UNAME="$(whoami)" docker compose ps -a
   ;;
 
 "https")
@@ -213,11 +211,11 @@ case "$1" in
   ;;
 
 "logs")
-  docker compose logs -f
+  USERID="$(id -u)" GID="$(id -g)" UNAME="$(whoami)" docker compose logs -f
   ;;
 
 "ps")
-  docker compose ps
+  USERID="$(id -u)" GID="$(id -g)" UNAME="$(whoami)" docker compose ps
   ;;
 
 "test")

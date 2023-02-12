@@ -26,7 +26,7 @@ services:
         source: tyamahori-schemaspy
         target: /opt/schema
     depends_on:
-      ssh:
+      app:
         condition: service_started
     networks:
       default:
@@ -44,10 +44,14 @@ services:
     tty: true
 
   app:
+    user: "${USERID}:${GID}"
     build:
       context: ../..
       dockerfile: ./docker/mac/php/Dockerfile
       args:
+        - UID=${USERID}
+        - GID=${GID}
+        - UNAME=${UNAME}
         - PROJECT_DOMAIN=${PROJECT_DOMAIN}
         - XDEBUG=true
         - RUNN_VERSION=${RUNN_VERSION}
@@ -115,6 +119,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    hostname: db.${PROJECT_DOMAIN}
 
   mysql:
     image: mysql:8.0.31
