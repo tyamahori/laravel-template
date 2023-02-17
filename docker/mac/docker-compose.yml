@@ -1,41 +1,4 @@
 services:
-  web:
-    image: nginx:1.23.2-alpine
-    container_name: ${COMPOSE_PROJECT_NAME}-${WEB_SUFFIX}
-    working_dir: /opt/projectWorkSpace
-    environment:
-      - PROJECT_DOMAIN=${PROJECT_DOMAIN}
-    command: >
-      /bin/sh -c
-      "envsubst '
-      $$PROJECT_DOMAIN
-      '< /etc/nginx/conf.d/default.conf.template
-      > /etc/nginx/conf.d/default.conf
-      && nginx -g 'daemon off;'"
-    volumes:
-      - type: bind
-        source: "./nginx/default.conf.template"
-        target: "/etc/nginx/conf.d/default.conf.template"
-      - type: bind
-        source: "../../src/public"
-        target: "/opt/projectWorkSpace/public"
-      - type: volume
-        source: tyamahori-socket
-        target: /var/run/php-fpm
-      - type: volume
-        source: tyamahori-schemaspy
-        target: /opt/schema
-    depends_on:
-      app:
-        condition: service_started
-    networks:
-      default:
-        aliases:
-          - ${PROJECT_DOMAIN}
-          - mail.${PROJECT_DOMAIN}
-          - file.${PROJECT_DOMAIN}
-          - minio.${PROJECT_DOMAIN}
-
   ssh:
     container_name: ${COMPOSE_PROJECT_NAME}-ssh
     build: ./ssh
@@ -44,30 +7,37 @@ services:
     tty: true
 
   app:
-    user: "${USERID}:${GID}"
+    user: ${USER_ID}:${GROUP_ID}
+    ports:
+      - 80:80
     build:
       context: ../..
       dockerfile: ./docker/mac/php/Dockerfile
       args:
-        - UID=${USERID}
-        - GID=${GID}
-        - UNAME=${UNAME}
-        - PROJECT_DOMAIN=${PROJECT_DOMAIN}
-        - XDEBUG=true
+        - USER_ID=${USER_ID}
+        - GROUP_ID=${GROUP_ID}
+        - USER_NAME=${USER_NAME}
         - RUNN_VERSION=${RUNN_VERSION}
         - SQLDEF_VERSION=${SQLDEF_VERSION}
     container_name: ${COMPOSE_PROJECT_NAME}-${APP_SUFFIX}
     environment:
       PHP_CS_FIXER_IGNORE_ENV: 1
     extra_hosts:
-      - "host.docker.internal:host-gateway" # rancher desktopだとこの設定が邪魔になる
+      # rancher desktopだとこの設定が邪魔になる
+      - "host.docker.internal:host-gateway"
     volumes:
       - type: bind
-        source: "../../src"
-        target: "/opt/projectWorkSpace"
-      - type: volume
-        source: tyamahori-socket
-        target: /var/run/php-fpm
+        source: ./php/000-default.conf
+        target: /etc/apache2/sites-available/000-default.conf
+      - type: bind
+        source: ./php/php.ini
+        target: /usr/local/etc/php/php.ini
+      - type: bind
+        source: ./php/docker-php-ext-xdebug.ini
+        target: /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - type: bind
+        source: ../../src
+        target: /opt/projectWorkSpace
     working_dir: /opt/projectWorkSpace
     env_file:
       - .env
@@ -82,6 +52,13 @@ services:
         condition: service_started
       s3:
         condition: service_started
+    networks:
+      default:
+        aliases:
+          - ${PROJECT_DOMAIN}
+          - mail.${PROJECT_DOMAIN}
+          - file.${PROJECT_DOMAIN}
+          - minio.${PROJECT_DOMAIN}
 
   schemaspy:
     container_name: ${COMPOSE_PROJECT_NAME}-${SCHEMA_SUFFIX}
@@ -188,8 +165,6 @@ volumes:
     name: ${COMPOSE_PROJECT_NAME}-redis
   tyamahori-db:
     name: ${COMPOSE_PROJECT_NAME}-db
-  tyamahori-socket:
-    name: ${COMPOSE_PROJECT_NAME}-socket
   tyamahori-schemaspy:
     name: ${COMPOSE_PROJECT_NAME}-schemaspy
   tyamahori-node:
