@@ -8,8 +8,6 @@ services:
 
   app:
     user: ${USER_ID}:${GROUP_ID}
-    ports:
-      - 80:80
     build:
       context: ../..
       dockerfile: ./docker/mac/php/Dockerfile
