@@ -3,235 +3,24 @@
 # 便利スクリプトのファイルはプロジェクト直下に置く
 # PhpStormのFile Watcherによるファイル反映がリアルタイムになるため便利になる。
 
-cd docker/mac || exit
-
-# .env ファイルを .env.localからコピーして生成する
-if [ ! -e '.env' ]; then
-    echo 'envファイルを生成します。'
-    cp .env.local .env
-    echo 'envファイルが生成されました。'
-fi
-
 # localのループバックIPを一つ設定する
-LOCAL_IP=$(grep LOCAL_IP .env | cut -d '=' -f2)
-
+#LOCAL_IP=$(grep LOCAL_IP .env | cut -d '=' -f2)
 # macにて必要に応じて sudo ifconfig lo0 alias を叩く
-if [[ "$OSTYPE" == "darwin"* ]] && ! ifconfig | grep -i "$LOCAL_IP" > /dev/null; then
-    echo "${LOCAL_IP}が無効なのでエイリアスを生成します。パスワードを入力してください。"
-    sudo ifconfig lo0 alias "$LOCAL_IP" up
-fi
+#if [[ "$OSTYPE" == "darwin"* ]] && ! ifconfig | grep -i "$LOCAL_IP" > /dev/null; then
+#    echo "${LOCAL_IP}が無効なのでエイリアスを生成します。パスワードを入力してください。"
+#    sudo ifconfig lo0 alias "$LOCAL_IP" up
+#fi
 
-# ネットワーク名定義
-PROJECT_NETWORK=$(grep NETWORK_NAME .env | cut -d '=' -f2)
-docker network ls | grep "${PROJECT_NETWORK}" >/dev/null || docker network create "${PROJECT_NETWORK}"
-
-# ドメイン定義
-PROJECT_DOMAIN=$(grep PROJECT_DOMAIN .env | cut -d '=' -f2 | head -1)
-
-# プロジェクト名定義
-COMPOSE_PROJECT_NAME=$(grep COMPOSE_PROJECT_NAME .env | cut -d '=' -f2 | head -1)
-
-# コンテナ名サフィックス
-WEB_SUFFIX=$(grep WEB_SUFFIX .env | cut -d '=' -f2 | head -1)
-APP_SUFFIX=$(grep APP_SUFFIX .env | cut -d '=' -f2 | head -1)
-DB_SUFFIX=$(grep DB_SUFFIX .env | cut -d '=' -f2 | head -1)
-
-
-
-
-# コンテナ名定義
-WEB="${COMPOSE_PROJECT_NAME}-${WEB_SUFFIX}"
-APP="${COMPOSE_PROJECT_NAME}-${APP_SUFFIX}"
-DB="${COMPOSE_PROJECT_NAME}-${DB_SUFFIX}"
-
-# コマンド定義
-RUN_APP="docker exec -it ${APP}"
-
-# コンテナ内のパス定義
-REMOTE_APP_DIR="/opt/${PROJECT_DOMAIN}"
-REMOTE_VENDOR_DIR="${REMOTE_APP_DIR}/vendor"
-#REMOTE_NODE_DIR="${REMOTE_APP_DIR}/node_modules"
-
-# ローカルのパス定義
-LOCAL_APP_DIR="../../src"
-LOCAL_VENDOR_DIR="${LOCAL_APP_DIR}/vendor"
-LOCAL_NODE_DIR="${LOCAL_APP_DIR}/node_modules"
-
-SET_ENV_COMMAND="USERID=$(id -u) GID=$(id -g) UNAME=$(whoami)"
 case "$1" in
-
-"create")
-# イメージ、データボリュームの全消し。最初からやり直す場合に使用する。
-  eval "$SET_ENV_COMMAND" docker compose down -v --rmi all --remove-orphans
-
-  rm -rf ${LOCAL_VENDOR_DIR}
-  # rm -rf ${LOCAL_NODE_DIR}
-
-  docker network create "${PROJECT_NETWORK}"
-
-  eval "$SET_ENV_COMMAND" docker compose up -d --build
-
-  ${RUN_APP} composer install
-  ${RUN_APP} composer dump-autoload
-
-  ${RUN_APP} ./artisan migrate:refresh --seed
-
-  ${RUN_APP} ./artisan ide-helper:generate
-  ${RUN_APP} ./artisan ide-helper:models --nowrite
-  ${RUN_APP} ./artisan ide-helper:meta
-
-  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
-  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
-  # docker cp "${APP}":"${REMOTE_APP_DIR}"/.phpstorm.meta.php ${LOCAL_APP_DIR}
-  # docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
-  # docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
-
-  eval "$SET_ENV_COMMAND" docker compose images
-  eval "$SET_ENV_COMMAND" docker compose ps -a
-  ;;
-
-"rebuild")
-# イメージだけリビルドする
-  eval "$SET_ENV_COMMAND" docker compose down
-  eval "$SET_ENV_COMMAND" docker compose up -d --build
-  eval "$SET_ENV_COMMAND" docker container prune -f
-  eval "$SET_ENV_COMMAND" docker compose images
-  eval "$SET_ENV_COMMAND" docker compose ps -a
-  ;;
-
-"setup")
-# ボリュームを削除して再度やり直す
-  eval "$SET_ENV_COMMAND" docker compose down --volumes --remove-orphans
-
-  # rm -rf ${LOCAL_VENDOR_DIR}
-  # rm -rf ${LOCAL_NODE_DIR}
-
-  eval "$SET_ENV_COMMAND" docker compose up -d
-
-  ${RUN_APP} composer install
-  ${RUN_APP} composer dump-autoload
-
-  ${RUN_APP} ./artisan migrate:refresh --seed
-
-  ${RUN_APP} ./artisan ide-helper:generate
-  ${RUN_APP} ./artisan ide-helper:models --nowrite
-
-  # docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
-  # docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
-
-  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
-  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
-
-  docker container prune -f
-  docker image prune -f
-  docker compose images
-  docker compose ps -a
-  ;;
-
-"up")
-# docker-composeの単純な再起動
-  eval "$SET_ENV_COMMAND" docker compose down
-  eval "$SET_ENV_COMMAND" docker compose up -d
-  eval "$SET_ENV_COMMAND" docker compose ps -a
-  ;;
-
-"down")
-# docker-compose down
-  eval "$SET_ENV_COMMAND" docker compose down
-  eval "$SET_ENV_COMMAND" docker compose ps -a
-  ;;
-
-"https")
-  docker exec -it "${HTTPS}" bash
-  ;;
-
-"web")
-  docker exec -it "${WEB}" sh
-  ;;
-
-"app")
-  docker exec -it "${APP}" bash
-  ;;
-
-"schema")
-  docker compose run --rm schemaspy
-  ;;
-
-"ide")
-  ${RUN_APP} ./artisan ide-helper:generate
-  ${RUN_APP} ./artisan ide-helper:models --nowrite
-  ${RUN_APP} ./artisan ide-helper:meta
-
-  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper.php ${LOCAL_APP_DIR}
-  # docker cp "${APP}":"${REMOTE_APP_DIR}"/_ide_helper_models.php ${LOCAL_APP_DIR}
-  # docker cp "${APP}":"${REMOTE_APP_DIR}"/.phpstorm.meta.php ${LOCAL_APP_DIR}
-  ;;
-
-"db:refresh")
-  docker compose down
-
-  docker volume rm "${COMPOSE_PROJECT_NAME}-db"
-  docker volume rm "${COMPOSE_PROJECT_NAME}-redis"
-  # docker volume rm "${COMPOSE_PROJECT_NAME}-redis" 画像登録時を想定する場合はコメントアウトする
-
-  docker compose up -d
-  ${RUN_APP} ./artisan migrate
-  ${RUN_APP} ./artisan migrate:refresh
-  ${RUN_APP} ./artisan db:seed
-
-  docker compose run --rm schemaspy
-  ;;
-
-"composer")
-  rm -rf ${LOCAL_VENDOR_DIR}
-  ${RUN_APP} composer "${@:2}"
-  docker cp "${APP}":"${REMOTE_VENDOR_DIR}" ${LOCAL_APP_DIR}
-  ;;
-
-"artisan")
-  ${RUN_APP} ./artisan "${@:2}"
-  ;;
-
-"yarn")
-  # rm -rf ${LOCAL_NODE_DIR}
-  ${RUN_APP} yarn "${@:2}"
-  # docker cp "${APP}":"${REMOTE_NODE_DIR}" ${LOCAL_APP_DIR}
-  ;;
-
-"watch")
-  ${RUN_APP} yarn watch
-  ;;
-
-"logs")
-  USERID="$(id -u)" GID="$(id -g)" UNAME="$(whoami)" docker compose logs -f
-  ;;
-
-"ps")
-  USERID="$(id -u)" GID="$(id -g)" UNAME="$(whoami)" docker compose ps
-  ;;
-
-"test")
-  docker exec -i "${APP}" ./vendor/bin/phpunit
-  ;;
-
-"phpstan-all")
-    ${RUN_APP} composer ide-helper
-    ${RUN_APP} composer phpstan
-    ;;
 
 "phpstan-on-save")
     # PHPStormのFile Watchers機能を見越したコマンド
-    docker exec -t "${APP}" composer ide-helper
-    echo "${@:2}" | sed -e 's/src/./' | xargs -r docker exec -t "${APP}" composer phpstan
+    docker compose -f ./docker/mac/docker-compose.yml exec app composer ide-helper
+    echo "${@:2}" | sed -e 's/src/./' | xargs -r docker compose -f ./docker/mac/docker-compose.yml exec app composer phpstan
     ;;
 
 "php-cs-fixer")
     # PHPStormのFile Watchers機能を見越したコマンド
-    echo "${@:2}" | sed -e 's/src/./' | xargs -r docker exec -t "${APP}" composer php-cs-fixer
+    echo "${@:2}" | sed -e 's/src/./' | xargs -r docker compose -f ./docker/mac/docker-compose.yml exec app composer php-cs-fixer
     ;;
-"ssh")
-    ssh-keygen -R localhost
-    ssh-keygen -R 127.0.0.1
-    ssh -oStrictHostKeyChecking=no -i ./ssh/localDocker -ND 9080 root@localhost
-    # mkcert -key-file ./key.pem -cert-file ./cert.pem tyamahori.com
 esac

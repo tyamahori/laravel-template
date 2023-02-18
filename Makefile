@@ -60,9 +60,9 @@ dc-ide-helper:
 	$(COMPOSE_BASE_COMMAND) exec -it $(APP_SERVICE) php artisan ide-helper:generate
 	$(COMPOSE_BASE_COMMAND) exec -it $(APP_SERVICE) php artisan ide-helper:models --nowrite
 	$(COMPOSE_BASE_COMMAND) exec -it $(APP_SERVICE) php artisan ide-helper:meta
-	$(COMPOSE_BASE_COMMAND) cp $(APP_SERVICE):/opt/projectWorkSpace/_ide_helper.php ./src/_ide_helper.php
-	$(COMPOSE_BASE_COMMAND) cp $(APP_SERVICE):/opt/projectWorkSpace/_ide_helper_models.php ./src/_ide_helper_models.php
-	$(COMPOSE_BASE_COMMAND) cp $(APP_SERVICE):/opt/projectWorkSpace/.phpstorm.meta.php ./src/.phpstorm.meta.php
+#	$(COMPOSE_BASE_COMMAND) cp $(APP_SERVICE):/opt/projectWorkSpace/_ide_helper.php ./src/_ide_helper.php
+#	$(COMPOSE_BASE_COMMAND) cp $(APP_SERVICE):/opt/projectWorkSpace/_ide_helper_models.php ./src/_ide_helper_models.php
+#	$(COMPOSE_BASE_COMMAND) cp $(APP_SERVICE):/opt/projectWorkSpace/.phpstorm.meta.php ./src/.phpstorm.meta.php
 
 .PHONY: rm-vendor-dir
 rm-vendor-dir: ## Delete Vendor Directory
@@ -114,11 +114,18 @@ dc-db-refresh:
 .PHONY: dc-initialize
 dc-initialize: ## Setup Docker Environment
 dc-initialize:
-#	$(COMPOSE_BASE_COMMAND) down -v --rmi all --remove-orphans
-	$(COMPOSE_BASE_COMMAND) down
+	$(COMPOSE_BASE_COMMAND) down -v --rmi all --remove-orphans
 #	rm -rf $(COMPOSER_DIR)
 	$(COMPOSE_BASE_COMMAND) up -d
 	$(COMPOSE_BASE_COMMAND) exec -it $(APP_SERVICE) composer install
-
+	$(COMPOSE_BASE_COMMAND) exec -it $(APP_SERVICE) php artisan migrate:refresh --seed
+	$(COMPOSE_BASE_COMMAND) exec -it $(APP_SERVICE) php artisan ide-helper:generate
+	$(COMPOSE_BASE_COMMAND) exec -it $(APP_SERVICE) php artisan ide-helper:models --nowrite
+	$(COMPOSE_BASE_COMMAND) exec -it $(APP_SERVICE) php artisan ide-helper:meta
+	$(COMPOSE_BASE_COMMAND) ps -a
+#	$(COMPOSE_BASE_COMMAND) cp $(APP_SERVICE):/opt/projectWorkSpace/_ide_helper.php ./src/_ide_helper.php
+#	$(COMPOSE_BASE_COMMAND) cp $(APP_SERVICE):/opt/projectWorkSpace/_ide_helper_models.php ./src/_ide_helper_models.php
+#	$(COMPOSE_BASE_COMMAND) cp $(APP_SERVICE):/opt/projectWorkSpace/.phpstorm.meta.php ./src/.phpstorm.meta.php
+#	$(COMPOSE_BASE_COMMAND) cp $(APP_SERVICE):/opt/projectWorkSpace/vendor $(COMPOSER_DIR)
 
 # docker volume ls -f name=tyamahori | awk 'NR != 1 {print $2}' | xargs docker volume rm
