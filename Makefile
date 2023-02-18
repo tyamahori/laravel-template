@@ -84,6 +84,7 @@ dc-ssh: ## SSH Docker Container
 dc-ssh:
 	ssh-keygen -R localhost
 	ssh-keygen -R 127.0.0.1
+	chmod 0600 ./docker/mac/ssh/localDocker
 	ssh -oStrictHostKeyChecking=no -i ./docker/mac/ssh/localDocker -ND 9080 root@localhost
 
 .PHONY: dc-phpunit
