@@ -8,6 +8,8 @@ services:
 
   app:
     user: ${USER_ID}:${GROUP_ID}
+    ports:
+      - "127.0.0.1:80:80"
     build:
       context: ../..
       dockerfile: ./docker/mac/php/Dockerfile
@@ -21,7 +23,6 @@ services:
     environment:
       PHP_CS_FIXER_IGNORE_ENV: 1
     extra_hosts:
-      # rancher desktopだとこの設定が邪魔になる
       - "host.docker.internal:host-gateway"
     volumes:
       - type: bind
@@ -128,7 +129,7 @@ services:
       retries: 30
 
   mail:
-    image: mailhog/mailhog
+    image: axllent/mailpit:v1.5
     platform: linux/x86_64
     container_name: ${COMPOSE_PROJECT_NAME}-${MAIL_SUFFIX}
 

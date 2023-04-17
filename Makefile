@@ -6,7 +6,7 @@ USER_NAME := $(shell whoami)
 USER_ID := $(shell id -u)
 GROUP_ID := $(shell id -g)
 DOCKER_COMPOSE_ENV := ./docker/mac/.env
-COMPOSE_BASE_COMMAND := USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID) USER_NAME=$(USER_NAME) docker compose -f ./docker/mac/docker-compose.yml
+COMPOSE_BASE_COMMAND := USER_ID=$(USER_ID) GROUP_ID=$(GROUP_ID) USER_NAME=$(USER_NAME) docker compose -f ./docker/mac/compose.yaml
 PS_A := ps -a
 COMPOSER_DIR := ./src/vendor
 APP_SERVICE = app
